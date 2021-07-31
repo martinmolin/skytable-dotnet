@@ -27,7 +27,11 @@ namespace Skytable.Client.Example
             System.Console.WriteLine(getPerson.Name);
             
             // Async Example
-            setResponse = await connection.SetAsync("PA", setPerson);
+            var setPersonAsync = new Person();
+            setPersonAsync.Name = "Jane Doe";
+            setPersonAsync.Age = 29;
+
+            setResponse = await connection.SetAsync("PA", setPersonAsync);
             getResponse = await connection.GetAsync("PA");
             getPerson = await connection.GetAsync<Person>("PA");
 

@@ -60,9 +60,11 @@ namespace Skytable.Client.Parsing
                         throw new ParseException(ParseError.DataTypeParseError);
                     return new Element(str);
                 case SKYHASH_U64:
-                    break;
+                    var u64 = ParseNextU64();
+                    return new Element(u64);
                 case SKYHASH_ARRAY:
-                    break;
+                    var array = ParseNextArray();
+                    return new Element(array);
                 case SKYHASH_RESPCODE:
                     var respCode = ParseNextRespCode();
                     return new Element(respCode);
@@ -73,6 +75,35 @@ namespace Skytable.Client.Parsing
             }
 
             return null; // TODO: Remove after implementing a parse response type.
+        }
+
+        private List<Element> ParseNextArray()
+        {
+            var (startedAt, stoppedAt) = ReadLine();
+            var line = _buffer.GetRange(startedAt, stoppedAt - startedAt);
+            if (line.Count == 0)
+                throw new ParseException(ParseError.NotEnough);
+            
+            var size = (int)ParseSize(line);
+            var elements = new List<Element>((int)size);
+            for (int i = 0; i < size; i++)
+            {
+                elements.Add(ParseNextElement());
+            }
+            return elements;
+        }
+
+        private ulong ParseNextU64()
+        {
+            var ourU64Chunk = GetNextElement();
+            var ourU64 = ParseU64(ourU64Chunk);
+            if (WillCursorGiveLineFeed())
+            {
+                _cursor++;
+                return ourU64;
+            }
+
+            throw new ParseException(ParseError.UnexpectedByte);
         }
 
         private List<byte> ReadUntil(int until)
@@ -187,6 +218,40 @@ namespace Skytable.Client.Parsing
 
             return itemSize;
         }
+
+        private ulong ParseU64(List<byte> bytes)
+        {
+            if (bytes.Count == 0)
+                throw new ParseException(ParseError.NotEnough);
+
+            ulong itemU64 = 0;
+            foreach (byte digit in bytes)
+            {
+                var c = (char)digit;
+                if (!char.IsDigit(c))
+                    throw new ParseException(ParseError.DataTypeParseError);
+                
+                // 48 is the ASCII code for 0, and 57 is the ascii code for 9
+                // so if 0 is given, the subtraction should give 0; similarly
+                // if 9 is given, the subtraction should give us 9!
+                try
+                {
+                    checked
+                    {
+                        byte curDig = (byte)(digit - 48);
+                        var product = itemU64 * 10;
+                        itemU64 = product + curDig;
+                    }
+                }
+                catch(OverflowException)
+                {
+                    throw new ParseException(ParseError.DataTypeParseError);
+                }
+            }
+
+            return itemU64;
+        }
+            
 
         private (int, int) ReadLine()
         {

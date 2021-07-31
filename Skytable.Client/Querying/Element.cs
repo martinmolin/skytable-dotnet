@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Skytable.Client.Querying
 {
     public class Element
@@ -21,6 +23,12 @@ namespace Skytable.Client.Querying
         {
             Item = r;
             Type = ElementType.RespCode;
+        }
+
+        public Element(List<Element> elements)
+        {
+            Item = elements;
+            Type = ElementType.Array;
         }
 
         public override string ToString()
