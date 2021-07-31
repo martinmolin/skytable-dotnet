@@ -69,12 +69,11 @@ namespace Skytable.Client.Parsing
                     var respCode = ParseNextRespCode();
                     return new Element(respCode);
                 case SKYHASH_FLATARRAY:
-                    break;
+                    var flatArray = ParseNextFlatArray();
+                    return new Element(flatArray);
                 default:
                     throw new NotImplementedException($"The tsymbol '{tsymbol}' is not yet implemented.");
             }
-
-            return null; // TODO: Remove after implementing a parse response type.
         }
 
         private List<Element> ParseNextArray()
@@ -89,6 +88,29 @@ namespace Skytable.Client.Parsing
             for (int i = 0; i < size; i++)
             {
                 elements.Add(ParseNextElement());
+            }
+            return elements;
+        }
+
+        private List<string> ParseNextFlatArray()
+        {
+            var (startedAt, stoppedAt) = ReadLine();
+            var line = _buffer.GetRange(startedAt, stoppedAt - startedAt);
+            if (line.Count == 0)
+                throw new ParseException(ParseError.NotEnough);
+            
+            var size = (int)ParseSize(line);
+            var elements = new List<string>((int)size);
+            for (int i = 0; i < size; i++)
+            {
+                if (_buffer.Count < _cursor)
+                    throw new ParseException(ParseError.NotEnough);
+                
+                var tsymbol = _buffer[_cursor++];
+                if (tsymbol != SKYHASH_STRING)
+                    throw new ParseException(ParseError.UnknownDataType);
+
+                elements.Add(ParseNextString());
             }
             return elements;
         }

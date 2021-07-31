@@ -31,6 +31,12 @@ namespace Skytable.Client.Querying
             Type = ElementType.Array;
         }
 
+        public Element(List<string> strings)
+        {
+            Item = strings;
+            Type = ElementType.FlatArray;
+        }
+
         public override string ToString()
         {
             if (Item == null)
