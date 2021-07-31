@@ -3,9 +3,9 @@ using Skytable.Client.Querying;
 
 namespace Skytable.Client
 {
-    public abstract class Skyhash<T> where T: class
+    public abstract class Skyhash
     {
-        public virtual T From(Response response)
+        public virtual T From<T>(Response response)
         {
             switch(response.Element.Type)
             {
@@ -18,7 +18,7 @@ namespace Skytable.Client
 
         public virtual string Into()
         {
-            return JsonSerializer.Serialize<T>(this as T);
+            return JsonSerializer.Serialize(this, this.GetType());
         }
     }
 }

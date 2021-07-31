@@ -79,22 +79,22 @@ namespace Skytable.Client
             return await RunSimpleQueryAsync(query);
         }
 
-        public T Get<T>(string key) where T: Skyhash<T>, new()
+        public T Get<T>(string key) where T: Skyhash, new()
         {
             var query = new Query();
             query.Push("get");
             query.Push(key);
             var response = RunSimpleQuery(query);
-            return new T().From(response);
+            return new T().From<T>(response);
         }
 
-        public async Task<T> GetAsync<T>(string key) where T: Skyhash<T>, new()
+        public async Task<T> GetAsync<T>(string key) where T: Skyhash, new()
         {
             var query = new Query();
             query.Push("get");
             query.Push(key);
             var response = await RunSimpleQueryAsync(query);
-            return new T().From(response);
+            return new T().From<T>(response);
         }
 
         public Response Set(string key, string value)
@@ -115,7 +115,7 @@ namespace Skytable.Client
             return await RunSimpleQueryAsync(query);
         }
 
-        public Response Set<T>(string key, Skyhash<T> value) where T: Skyhash<T>
+        public Response Set(string key, Skyhash value)
         {
             var query = new Query();
             query.Push("set");
@@ -124,7 +124,7 @@ namespace Skytable.Client
             return RunSimpleQuery(query);
         }
 
-        public async Task<Response> SetAsync<T>(string key, Skyhash<T> value) where T: Skyhash<T>
+        public async Task<Response> SetAsync(string key, Skyhash value)
         {
             var query = new Query();
             query.Push("set");

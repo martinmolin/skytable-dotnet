@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
+using Skytable.Client.Querying;
 
 namespace Skytable.Client.Example
 {
-    class Person : Skyhash<Person>
+    class Person : Skyhash
     {
         public string Name { get; set; }
         public int Age { get; set; }
@@ -38,6 +39,15 @@ namespace Skytable.Client.Example
             System.Console.WriteLine(setResponse);
             System.Console.WriteLine(getResponse);
             System.Console.WriteLine(getPerson.Name);
+
+            // Custom MGET query Example
+            var query = new Query();
+            query.Push("MGET");
+            query.Push("P");
+            query.Push("PA");
+
+            var result = connection.RunSimpleQuery(query);
+            System.Console.WriteLine(result);
         }
     }
 }
