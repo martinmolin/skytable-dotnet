@@ -1,5 +1,4 @@
-﻿using System;
-using Skytable.Client;
+﻿using System.Threading.Tasks;
 
 namespace Skytable.Client.Example
 {
@@ -11,8 +10,9 @@ namespace Skytable.Client.Example
 
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
+            // Sync Example
             var setPerson = new Person();
             setPerson.Name = "John Doe";
             setPerson.Age = 30;
@@ -21,6 +21,15 @@ namespace Skytable.Client.Example
             var setResponse = connection.Set("P", setPerson);
             var getResponse = connection.Get("P");
             var getPerson = connection.Get<Person>("P");
+
+            System.Console.WriteLine(setResponse);
+            System.Console.WriteLine(getResponse);
+            System.Console.WriteLine(getPerson.Name);
+            
+            // Async Example
+            setResponse = await connection.SetAsync("PA", setPerson);
+            getResponse = await connection.GetAsync("PA");
+            getPerson = await connection.GetAsync<Person>("PA");
 
             System.Console.WriteLine(setResponse);
             System.Console.WriteLine(getResponse);

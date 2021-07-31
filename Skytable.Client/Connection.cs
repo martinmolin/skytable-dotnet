@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Collections.Generic;
 using Skytable.Client.Querying;
 using Skytable.Client.Parsing;
+using System.Threading.Tasks;
 
 namespace Skytable.Client
 {
@@ -34,6 +35,22 @@ namespace Skytable.Client
             }
         }
 
+        public async Task<Response> RunSimpleQueryAsync(Query query)
+        {
+            await query.WriteToAsync(_client.GetStream());
+
+            while (true)
+            {
+                var buffer = new byte[1024];
+                var read = await _client.GetStream().ReadAsync(buffer, 0, 1024);
+                if (read == 0)
+                    throw new Exception("ConnectionReset");
+
+                _buffer.AddRange(buffer[..read]);
+                return ParseResponse();
+            }
+        }
+
         private Response ParseResponse()
         {
             // The connection was possibly reset
@@ -54,12 +71,29 @@ namespace Skytable.Client
             return RunSimpleQuery(query);
         }
 
+        public async Task<Response> GetAsync(string key)
+        {
+            var query = new Query();
+            query.Push("get");
+            query.Push(key);
+            return await RunSimpleQueryAsync(query);
+        }
+
         public T Get<T>(string key) where T: Skyhash<T>, new()
         {
             var query = new Query();
             query.Push("get");
             query.Push(key);
             var response = RunSimpleQuery(query);
+            return new T().From(response);
+        }
+
+        public async Task<T> GetAsync<T>(string key) where T: Skyhash<T>, new()
+        {
+            var query = new Query();
+            query.Push("get");
+            query.Push(key);
+            var response = await RunSimpleQueryAsync(query);
             return new T().From(response);
         }
 
@@ -72,6 +106,15 @@ namespace Skytable.Client
             return RunSimpleQuery(query);
         }
 
+        public async Task<Response> SetAsync(string key, string value)
+        {
+            var query = new Query();
+            query.Push("set");
+            query.Push(key);
+            query.Push(value);
+            return await RunSimpleQueryAsync(query);
+        }
+
         public Response Set<T>(string key, Skyhash<T> value) where T: Skyhash<T>
         {
             var query = new Query();
@@ -79,6 +122,15 @@ namespace Skytable.Client
             query.Push(key);
             query.Push(value.Into());
             return RunSimpleQuery(query);
+        }
+
+        public async Task<Response> SetAsync<T>(string key, Skyhash<T> value) where T: Skyhash<T>
+        {
+            var query = new Query();
+            query.Push("set");
+            query.Push(key);
+            query.Push(value.Into());
+            return await RunSimpleQueryAsync(query);
         }
     }
 }
