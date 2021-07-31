@@ -43,7 +43,7 @@ class Program
 ```
 ## TODO:
 - [ ] Parse element types
-  - [x] String
+  - [x] STRING
   - [ ] U64
   - [ ] ARRAY
   - [x] RESPCODE
@@ -75,3 +75,6 @@ class Program
   - [ ] USE
   - [ ] INSPECT
   - [ ] DROP
+- [ ] Tests
+    - [ ] Queries
+    - [ ] Parser
