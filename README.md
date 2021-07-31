@@ -1,6 +1,6 @@
 # Skytable client for .NET
 
-### This library is a work in progress. It is not ready for usage yet. See TODO
+### This library is a work in progress. It is not ready for usage yet. See [TODO](#todos)
 
 ## Introduction
 
@@ -41,6 +41,7 @@ class Program
     }
 }
 ```
+<a name="todos"></a>
 ## TODO:
 - [ ] Parse element types
   - [x] STRING
