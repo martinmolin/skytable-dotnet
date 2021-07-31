@@ -1,5 +1,7 @@
 # Skytable client for .NET
 
+### This library is a work in progress. It is not ready for usage yet. See TODO
+
 ## Introduction
 
 This library is an inofficial client for the free and open-source NoSQL database
@@ -13,3 +15,63 @@ This version of the library was tested with the latest Skytable release
 
 This library only ships with the bare minimum that is required for interacting with Skytable. Once you have
 Skytable installed and running, you're ready to follow this guide!
+
+Example usage:
+```cs
+using System;
+using Skytable.Client;
+
+class Person : Skyhash<Person>
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        var setPerson = new Person();
+        setPerson.Name = "John Doe";
+        setPerson.Age = 30;
+
+        var connection = new Connection("127.0.0.1", 2003);
+        var setResponse = connection.Set("P", setPerson);
+        var getResponse = connection.Get<Person>("P");
+    }
+}
+```
+## TODO:
+- [ ] Parse element types
+  - [x] String
+  - [ ] U64
+  - [ ] ARRAY
+  - [x] RESPCODE
+  - [ ] FLATARRAY
+- [ ] Pipelined queries
+- [ ] Actions
+  - [ ] DBSIZE
+  - [ ] DEL
+  - [ ] EXISTS
+  - [ ] FLUSHDB
+  - [X] GET
+  - [ ] HEYA
+  - [X] SET
+  - [ ] KEYLEN
+  - [ ] LSKEYS
+  - [ ] MGET
+  - [ ] MKSNAP
+  - [ ] MSET
+  - [ ] MUPDATE
+  - [ ] POP
+  - [ ] SDEL
+  - [ ] SET
+  - [ ] SSET
+  - [ ] SUPDATE
+  - [ ] UPDATE
+  - [ ] USET
+- [ ] DDL
+  - [ ] CREATE
+  - [ ] USE
+  - [ ] INSPECT
+  - [ ] DROP
