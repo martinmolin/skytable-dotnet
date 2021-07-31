@@ -44,10 +44,10 @@ class Program
 <a name="todos"></a>
 ## TODO:
 - [ ] Parse element types
-  - [x] STRING
-  - [ ] U64
-  - [ ] ARRAY
-  - [x] RESPCODE
+  - [X] STRING
+  - [X] U64
+  - [X] ARRAY
+  - [X] RESPCODE
   - [ ] FLATARRAY
 - [ ] Pipelined queries
 - [ ] Actions
