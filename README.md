@@ -43,12 +43,12 @@ class Program
 ```
 <a name="todos"></a>
 ## TODO:
-- [ ] Parse element types
+- [X] Parse element types
   - [X] STRING
   - [X] U64
   - [X] ARRAY
   - [X] RESPCODE
-  - [ ] FLATARRAY
+  - [X] FLATARRAY
 - [ ] Pipelined queries
 - [ ] Actions
   - [ ] DBSIZE
