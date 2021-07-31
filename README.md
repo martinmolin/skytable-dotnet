@@ -21,7 +21,7 @@ Example usage:
 using System;
 using Skytable.Client;
 
-class Person : Skyhash<Person>
+class Person : Skyhash
 {
     public string Name { get; set; }
     public int Age { get; set; }
