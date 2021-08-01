@@ -10,7 +10,7 @@ This version of the library was tested with the latest Skytable release (release
 ## Using this library
 
 This library only ships with the bare minimum that is required for interacting with Skytable. Once you have
-Skytable installed and running, you're ready to follow this guide!
+Skytable installed and running, you're ready to try the example!
 
 Example usage:
 ```cs
@@ -37,8 +37,11 @@ class Program
     }
 }
 ```
+Keep in mind that you can always set up your own custom queries to perform other queries than `SET/GET`, see the `Skytable.Client.Example` project for more details.
+
 <a name="todos"></a>
 ## TODO:
+- [ ] Add TLS support
 - [ ] Document public API
 - [X] Parse element types
   - [X] STRING
