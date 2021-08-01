@@ -84,3 +84,6 @@ Keep in mind that you can always set up your own custom queries to perform other
 - [ ] Tests
     - [ ] Queries
     - [ ] Parser
+
+## Contributing
+Feel free to contribute by creating Issues to report bugs or wanted features. Enjoy!
