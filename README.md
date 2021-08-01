@@ -1,6 +1,6 @@
 # Skytable client for .NET
 
-### This library is a work in progress. It is not ready for usage yet. See [TODO](#todo)
+### This library is a work in progress. Usable but not battle tested. Be wary of breaking changes. See [TODO](#todo)
 
 ## Introduction
 
