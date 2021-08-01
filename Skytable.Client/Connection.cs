@@ -18,29 +18,80 @@ using System.Collections.Generic;
 using Skytable.Client.Querying;
 using Skytable.Client.Parsing;
 using System.Threading.Tasks;
+using System.IO;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Skytable.Client
 {
     public class Connection
     {
+        public string Host { get; }
         private const ushort BUF_CAP = 4096;
         private TcpClient _client;
+        private Stream _stream;
         private List<byte> _buffer;
-
+        
         public Connection(string host, ushort port)
+            : this(host, port, false)
         {
+
+        }
+
+        public Connection(string host, ushort port, bool useTls)
+        {
+            Host = host;
             _client = new TcpClient(host, port);
             _buffer = new List<Byte>(BUF_CAP);
+
+            if (useTls)
+                AuthenticateSsl();
+            else
+                _stream = _client.GetStream();
+        }
+
+        private void AuthenticateSsl()
+        {
+            var sslStream = new SslStream(
+                _client.GetStream(),
+                false,
+                new RemoteCertificateValidationCallback (ValidateServerCertificate),
+                null
+                );
+
+            try
+            {
+                sslStream.AuthenticateAsClient(Host);
+                _stream = sslStream;
+            }
+            catch (Exception)
+            {
+                _client.Close();
+                throw;
+            }
+        }
+
+        public static bool ValidateServerCertificate(
+              object sender,
+              X509Certificate certificate,
+              X509Chain chain,
+              SslPolicyErrors sslPolicyErrors)
+        {
+           if (sslPolicyErrors == SslPolicyErrors.None)
+                return true;
+            
+            // Do not allow this client to communicate with unauthenticated servers.
+            return false;
         }
 
         public Response RunSimpleQuery(Query query)
         {
-            query.WriteTo(_client.GetStream());
+            query.WriteTo(_stream);
 
             while (true)
             {
                 var buffer = new byte[1024];
-                var read = _client.GetStream().Read(buffer, 0, 1024);
+                var read = _stream.Read(buffer, 0, 1024);
                 if (read == 0)
                     throw new Exception("ConnectionReset");
 
@@ -51,12 +102,12 @@ namespace Skytable.Client
 
         public async Task<Response> RunSimpleQueryAsync(Query query)
         {
-            await query.WriteToAsync(_client.GetStream());
+            await query.WriteToAsync(_stream);
 
             while (true)
             {
                 var buffer = new byte[1024];
-                var read = await _client.GetStream().ReadAsync(buffer, 0, 1024);
+                var read = await _stream.ReadAsync(buffer, 0, 1024);
                 if (read == 0)
                     throw new Exception("ConnectionReset");
 
