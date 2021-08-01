@@ -18,7 +18,7 @@ namespace Skytable.Client.Querying
     {
         public Element Element { get; }
 
-        public Response(Element element)
+        internal Response(Element element)
         {
             Element = element;
         }

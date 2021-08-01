@@ -21,31 +21,31 @@ namespace Skytable.Client.Querying
         public object Item { get; }
         public ElementType Type { get; }
 
-        public Element(string s)
+        internal Element(string s)
         {
             Item = s;
             Type = ElementType.String;
         }
 
-        public Element(ulong n)
+        internal Element(ulong n)
         {
             Item = n;
             Type = ElementType.UnsignedInt;
         }
 
-        public Element(RespCode r)
+        internal Element(RespCode r)
         {
             Item = r;
             Type = ElementType.RespCode;
         }
 
-        public Element(List<Element> elements)
+        internal Element(List<Element> elements)
         {
             Item = elements;
             Type = ElementType.Array;
         }
 
-        public Element(List<string> strings)
+        internal Element(List<string> strings)
         {
             Item = strings;
             Type = ElementType.FlatArray;

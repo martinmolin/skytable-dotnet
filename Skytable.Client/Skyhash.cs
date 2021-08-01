@@ -17,8 +17,14 @@ using Skytable.Client.Querying;
 
 namespace Skytable.Client
 {
+    /// <summary>
+    /// A type inheriting from Skyhash can be used in queries.
+    /// </summary>
     public abstract class Skyhash
     {
+        /// <summary>
+        /// This function will by default try to deserialize a <see cref="Response"/> into type T using the <see cref="JsonSerializer"/>.
+        /// </summary>
         public virtual T From<T>(Response response)
         {
             switch(response.Element.Type)
@@ -30,6 +36,9 @@ namespace Skytable.Client
             }
         }
 
+        /// <summary>
+        /// This function will by default try to serialize the object into JSON using the <see cref="JsonSerializer"/>.
+        /// </summary>
         public virtual string Into()
         {
             return JsonSerializer.Serialize(this, this.GetType());
