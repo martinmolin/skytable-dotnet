@@ -1,6 +1,6 @@
 # Skytable client for .NET
 
-### This library is a work in progress. It is not ready for usage yet. See [TODO](#todos)
+### This library is a work in progress. It is not ready for usage yet. See [TODO](#todo)
 
 ## Introduction
 
@@ -39,8 +39,13 @@ class Program
 ```
 Keep in mind that you can always set up your own custom queries to perform other queries than `SET/GET`, see the `Skytable.Client.Example` project for more details.
 
-<a name="todos"></a>
+<a name="todo"></a>
 ## TODO:
+- [ ] Restructure Example project into Examples
+- [ ] Create Benchmark project
+- [ ] Set up Releases
+    - [ ] Set up GHA
+    - [ ] Set up nuget
 - [ ] Add TLS support
 - [X] Document public API
 - [X] Parse element types
