@@ -4,10 +4,8 @@
 
 ## Introduction
 
-This library is an inofficial client ported from the official [Skytable client](https://github.com/skytable/client-rust) for the free and open-source NoSQL database [Skytable](https://github.com/skytable/skytable). First, go ahead and install Skytable by following the instructions [here](https://docs.skytable.io/getting-started). This library supports
-all Skytable versions that work with the [Skyhash 1.0 Protocol](https://docs.skytable.io/protocol/skyhash).
-This version of the library was tested with the latest Skytable release
-(release [0.6](https://github.com/skytable/skytable/releases/v0.6.0)).
+The .NET driver for Skytable is a client driver for the free and open source NoSQL database [Skytable](https://github.com/skytable/skytable) ported from the official [Skytable client](https://github.com/skytable/client-rust). First, go ahead and install Skytable by following the instructions [here](https://docs.skytable.io/getting-started). This library supports all Skytable versions that work with the [Skyhash 1.0 Protocol](https://docs.skytable.io/protocol/skyhash).
+This version of the library was tested with the latest Skytable release (release [0.6](https://github.com/skytable/skytable/releases/v0.6.0)).
 
 ## Using this library
 
