@@ -18,17 +18,20 @@ using System.Threading.Tasks;
 
 namespace Skytable.Client.Querying
 {
+    /// <summary>This type represents a single simple query as defined by the Skyhash protocol.</summary>
     public class Query
     {
         private ushort _sizeCount;
         private List<byte> _holdingBuffer;
-
+        
+        /// <summary>Creates an empty query with a no arguments.</summary>
         public Query()
         {
             _sizeCount = 0;
             _holdingBuffer = new List<byte>();
         }
 
+        /// <summary>Pushes an argument into the query.</summary>
         public void Push(string argument)
         {
             var unicode_argument = System.Text.Encoding.UTF8.GetBytes(argument);
@@ -40,6 +43,7 @@ namespace Skytable.Client.Querying
             _sizeCount++;
         }
 
+        /// <summary>Writes the query to the specified stream.</summary>
         public void WriteTo(Stream stream)
         {
             // TODO: Write everything at once?
@@ -50,6 +54,7 @@ namespace Skytable.Client.Querying
             stream.Write(_holdingBuffer.ToArray(), 0, _holdingBuffer.Count);
         }
 
+        /// <summary>Writes the query to the specified stream asynchronously.</summary>
         public async Task WriteToAsync(Stream stream)
         {
             // TODO: Write everything at once?

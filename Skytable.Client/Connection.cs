@@ -24,20 +24,30 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Skytable.Client
 {
+    /// <summary>A database connection over Skyhash/TCP.</summary>
     public class Connection
     {
+        /// <summary>Gets the host of this connection.</summary>
         public string Host { get; }
+        
         private const ushort BUF_CAP = 4096;
         private TcpClient _client;
         private Stream _stream;
         private List<byte> _buffer;
         
+        /// <summary>Create a new connection to a Skytable instance hosted on the provided host and port with Tls disabled.</summary>
+        /// <Param name="host">The host which is running Skytable.</Param>
+        /// <Param name="port">The port which the host is running Skytable.</Param>
         public Connection(string host, ushort port)
             : this(host, port, false)
         {
 
         }
 
+        /// <summary>Create a new connection to a Skytable instance hosted on the provided host and port with Tls on or off.</summary>
+        /// <Param name="host">The host which is running Skytable.</Param>
+        /// <Param name="port">The port which the host is running Skytable.</Param>
+        /// <Param name="useTls">Set to true if the connection should use TLS, otherwise set to false.</Param>
         public Connection(string host, ushort port, bool useTls)
         {
             Host = host;
@@ -71,7 +81,7 @@ namespace Skytable.Client
             }
         }
 
-        public static bool ValidateServerCertificate(
+        private static bool ValidateServerCertificate(
               object sender,
               X509Certificate certificate,
               X509Chain chain,
@@ -84,6 +94,11 @@ namespace Skytable.Client
             return false;
         }
 
+        /// <summary>
+        /// This function will write a <see cref="Query"/> to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
         public Response RunSimpleQuery(Query query)
         {
             query.WriteTo(_stream);
@@ -100,6 +115,11 @@ namespace Skytable.Client
             }
         }
 
+        /// <summary>
+        /// This function will write a <see cref="Query"/> asynchronously to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
         public async Task<Response> RunSimpleQueryAsync(Query query)
         {
             await query.WriteToAsync(_stream);
@@ -128,6 +148,12 @@ namespace Skytable.Client
             return result;
         }
 
+
+        /// <summary>
+        /// This function will create a GET <see cref="Query"/> and write it to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
         public Response Get(string key)
         {
             var query = new Query();
@@ -136,6 +162,11 @@ namespace Skytable.Client
             return RunSimpleQuery(query);
         }
 
+        /// <summary>
+        /// This function will create a GET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
         public async Task<Response> GetAsync(string key)
         {
             var query = new Query();
@@ -144,6 +175,11 @@ namespace Skytable.Client
             return await RunSimpleQueryAsync(query);
         }
 
+        /// <summary>
+        /// This function will create a GET <see cref="Query"/> and write it to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and try to return type T if successful.
+        /// </summary>
         public T Get<T>(string key) where T: Skyhash, new()
         {
             var query = new Query();
@@ -153,6 +189,11 @@ namespace Skytable.Client
             return new T().From<T>(response);
         }
 
+        /// <summary>
+        /// This function will create a GET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and try to return type T if successful.
+        /// </summary>
         public async Task<T> GetAsync<T>(string key) where T: Skyhash, new()
         {
             var query = new Query();
@@ -162,6 +203,11 @@ namespace Skytable.Client
             return new T().From<T>(response);
         }
 
+        /// <summary>
+        /// This function will create a SET <see cref="Query"/> and write it to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
         public Response Set(string key, string value)
         {
             var query = new Query();
@@ -171,6 +217,11 @@ namespace Skytable.Client
             return RunSimpleQuery(query);
         }
 
+        /// <summary>
+        /// This function will create a SET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
         public async Task<Response> SetAsync(string key, string value)
         {
             var query = new Query();
@@ -180,6 +231,11 @@ namespace Skytable.Client
             return await RunSimpleQueryAsync(query);
         }
 
+        /// <summary>
+        /// This function will create a SET <see cref="Query"/> and write it to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
         public Response Set(string key, Skyhash value)
         {
             var query = new Query();
@@ -189,6 +245,11 @@ namespace Skytable.Client
             return RunSimpleQuery(query);
         }
 
+        /// <summary>
+        /// This function will create a SET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
         public async Task<Response> SetAsync(string key, Skyhash value)
         {
             var query = new Query();

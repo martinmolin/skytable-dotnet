@@ -14,12 +14,18 @@
 
 namespace Skytable.Client.Querying
 {
+    /// <summary>This enum represents the data types supported by the Skyhash Protocol.</summary>
     public enum ElementType
     {
+        /// <summary>A binary/unicode string value; `<tsymbol>` is `+`.</summary>
         String,
+        /// <summary>An unsigned integer value; `<tsymbol>` is `:`.</summary>
         UnsignedInt,
+        /// <summary>Arrays can be nested! Their `<tsymbol>` is `&`.</summary>
         Array,
+        /// <summary>A response code.</summary>
         RespCode,
+        /// <summary>A non-recursive String array; tsymbol: `_`.</summary>
         FlatArray
     }
 }

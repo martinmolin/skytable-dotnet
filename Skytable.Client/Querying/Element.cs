@@ -16,41 +16,45 @@ using System.Collections.Generic;
 
 namespace Skytable.Client.Querying
 {
+    /// <summary>Represents the data types supported by the Skyhash protocol.</summary>
     public class Element
     {
+        /// <summary>Gets the object that this element represents. It is of type <see cref="ElementType"/>.</summary>
         public object Item { get; }
+        /// <summary>Gets the <see cref="ElementType"/> of the Item that this element represents.</summary>
         public ElementType Type { get; }
 
-        public Element(string s)
+        internal Element(string s)
         {
             Item = s;
             Type = ElementType.String;
         }
 
-        public Element(ulong n)
+        internal Element(ulong n)
         {
             Item = n;
             Type = ElementType.UnsignedInt;
         }
 
-        public Element(RespCode r)
+        internal Element(RespCode r)
         {
             Item = r;
             Type = ElementType.RespCode;
         }
 
-        public Element(List<Element> elements)
+        internal Element(List<Element> elements)
         {
             Item = elements;
             Type = ElementType.Array;
         }
 
-        public Element(List<string> strings)
+        internal Element(List<string> strings)
         {
             Item = strings;
             Type = ElementType.FlatArray;
         }
 
+        /// <summary>Returns a string with the format ElementType(Item).</summary>
         public override string ToString()
         {
             if (Item == null)
