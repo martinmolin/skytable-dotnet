@@ -42,7 +42,7 @@ Keep in mind that you can always set up your own custom queries to perform other
 <a name="todos"></a>
 ## TODO:
 - [ ] Add TLS support
-- [ ] Document public API
+- [X] Document public API
 - [X] Parse element types
   - [X] STRING
   - [X] U64

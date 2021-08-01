@@ -14,8 +14,10 @@
 
 namespace Skytable.Client.Querying
 {
+    /// <summary>A server response containing an <see cref="Element"/>.</summary>
     public class Response
     {
+        /// <summary>Gets the Element of this <see cref="Response"/>.</summary>
         public Element Element { get; }
 
         internal Response(Element element)
@@ -23,6 +25,7 @@ namespace Skytable.Client.Querying
             Element = element;
         }
 
+        /// <summary>Returns a string with the format Response(Element=(ElementType(Item)).</summary>
         public override string ToString()
         {
             if (Element == null)

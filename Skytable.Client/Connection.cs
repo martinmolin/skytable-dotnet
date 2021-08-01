@@ -27,7 +27,9 @@ namespace Skytable.Client
     /// <summary>A database connection over Skyhash/TCP.</summary>
     public class Connection
     {
+        /// <summary>Gets the host of this connection.</summary>
         public string Host { get; }
+        
         private const ushort BUF_CAP = 4096;
         private TcpClient _client;
         private Stream _stream;
