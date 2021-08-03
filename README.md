@@ -42,6 +42,8 @@ Keep in mind that you can always set up your own custom queries to perform other
 <a name="todo"></a>
 ## TODO:
 - [ ] Restructure Example project into Examples
+  - [ ] TLS ConnectionBuilder Example
+  - [ ] DDL Example
 - [ ] Create Benchmark project
 - [ ] Set up Releases
     - [ ] Set up GHA
