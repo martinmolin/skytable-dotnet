@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Skytable.Client\Skytable.Client.csproj" />
+    <ProjectReference Include="..\..\Skytable.Client\Skytable.Client.csproj" />
   </ItemGroup>
 
 

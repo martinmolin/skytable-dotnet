@@ -1,0 +1,54 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Basic",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-basic-example",
+            "program": "${workspaceFolder}/Examples/Basic/bin/Debug/net5.0/Basic.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Examples/Basic/",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "BasicAsync",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-basic-async-example",
+            "program": "${workspaceFolder}/Examples/BasicAsync/bin/Debug/net5.0/BasicAsync.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Examples/BasicAsync/",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "CustomQuery",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-custom-query-example",
+            "program": "${workspaceFolder}/Examples/CustomQuery/bin/Debug/net5.0/CustomQuery.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Examples/CustomQuery/",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Skyhash",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-skyhash-example",
+            "program": "${workspaceFolder}/Examples/Skyhash/bin/Debug/net5.0/Skyhash.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Examples/Skyhash/",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach"
+        }
+    ]
+}
