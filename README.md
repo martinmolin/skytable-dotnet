@@ -46,7 +46,7 @@ Keep in mind that you can always set up your own custom queries to perform other
 - [ ] Set up Releases
     - [ ] Set up GHA
     - [ ] Set up nuget
-- [ ] Add TLS support
+- [X] Add TLS support (Can connect over TLS but certificate validation might not be secure)
 - [X] Document public API
 - [X] Parse element types
   - [X] STRING
