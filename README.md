@@ -37,13 +37,19 @@ class Program
     }
 }
 ```
-Keep in mind that you can always set up your own custom queries to perform other queries than `SET/GET`, see the `Skytable.Client.Example` project for more details.
+Keep in mind that you can always set up your own custom queries to perform other queries than `SET/GET`, see the projects in `Examples` more details on how to use this library.
 
 <a name="todo"></a>
 ## TODO:
-- [ ] Restructure Example project into Examples
+- [X] Restructure Example project into Examples
+- [X] Add vscode launch/build tasks for all example projects
+- [ ] Useful Examples
   - [ ] TLS ConnectionBuilder Example
   - [ ] DDL Example
+  - [X] Basic Example
+  - [X] BasicAsync Example
+  - [X] CustomQuery Example
+  - [X] Skyhash Example
 - [ ] Create Benchmark project
 - [ ] Set up Releases
     - [ ] Set up GHA
@@ -88,4 +94,5 @@ Keep in mind that you can always set up your own custom queries to perform other
     - [ ] Parser
 
 ## Contributing
+
 Feel free to contribute by creating Issues to report bugs or wanted features. Enjoy!
