@@ -1,3 +1,5 @@
+using System.Security;
+
 namespace Skytable.Client
 {
     /// <summary>
@@ -5,13 +7,13 @@ namespace Skytable.Client
     /// </summary>
     public class ConnectionBuilder
     {
-        private string _host = "localhost";
+        private string _host = "127.0.0.1";
         private ushort _port = 2003;
-        private bool _useTls = false;
+        private string _certPath = string.Empty;
 
         /// <summary>
         /// Create a builder to create a <see cref="Connection"/>.
-        /// The connection will by default connect to localhost:2003 without TLS.
+        /// The connection will by default connect to 127.0.0.1:2003 without TLS.
         /// </summary>
         public ConnectionBuilder()
         {
@@ -35,17 +37,18 @@ namespace Skytable.Client
         }
 
         /// <summary>Enables TLS on the connection.</summary>
-        public ConnectionBuilder UseTls()
+        public ConnectionBuilder UseTls(string certPath)
         {
-            _useTls = true;
+            _certPath = certPath;
             return this;
         }
 
         /// <summary>Creates the <see cref="Connection"/> and connects to the Skytable server.</summary>
         public Connection Build()
         {
-            var connection = new Connection(_host, _port, _useTls);
-            return connection;
+            if (string.IsNullOrEmpty(_certPath))
+                return new Connection(_host, _port);
+            return new Connection(_host, _port, _certPath);
         }
     }
 }

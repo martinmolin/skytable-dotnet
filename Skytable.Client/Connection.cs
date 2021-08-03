@@ -29,7 +29,8 @@ namespace Skytable.Client
     {
         /// <summary>Gets the host of this connection.</summary>
         public string Host { get; }
-        
+
+        private string _certPath;        
         private const ushort BUF_CAP = 4096;
         private TcpClient _client;
         private Stream _stream;
@@ -39,25 +40,24 @@ namespace Skytable.Client
         /// <Param name="host">The host which is running Skytable.</Param>
         /// <Param name="port">The port which the host is running Skytable.</Param>
         public Connection(string host, ushort port)
-            : this(host, port, false)
-        {
-
-        }
-
-        /// <summary>Create a new connection to a Skytable instance hosted on the provided host and port with Tls on or off.</summary>
-        /// <Param name="host">The host which is running Skytable.</Param>
-        /// <Param name="port">The port which the host is running Skytable.</Param>
-        /// <Param name="useTls">Set to true if the connection should use TLS, otherwise set to false.</Param>
-        public Connection(string host, ushort port, bool useTls)
         {
             Host = host;
             _client = new TcpClient(host, port);
             _buffer = new List<Byte>(BUF_CAP);
+            _stream = _client.GetStream();
+        }
 
-            if (useTls)
-                AuthenticateSsl();
-            else
-                _stream = _client.GetStream();
+        /// <summary>Create a new connection to a Skytable instance hosted on the provided host and port with Tls enabled.</summary>
+        /// <Param name="host">The host which is running Skytable.</Param>
+        /// <Param name="port">The port which the host is running Skytable. This has to be configured as a secure port in Skytable.</Param>
+        /// <Param name="certPath">Path to the certificate file.</Param>
+        public Connection(string host, ushort port, string certPath)
+        {
+            Host = host;
+            _client = new TcpClient(host, port);
+            _buffer = new List<Byte>(BUF_CAP);
+            _certPath = certPath;
+            AuthenticateSsl();
         }
 
         private void AuthenticateSsl()
@@ -65,8 +65,8 @@ namespace Skytable.Client
             var sslStream = new SslStream(
                 _client.GetStream(),
                 false,
-                new RemoteCertificateValidationCallback (ValidateServerCertificate),
-                null
+                new RemoteCertificateValidationCallback(ValidateServerCertificate),
+                new LocalCertificateSelectionCallback(SelectCertificate)
                 );
 
             try
@@ -81,15 +81,36 @@ namespace Skytable.Client
             }
         }
 
+        private X509Certificate SelectCertificate(
+            object sender,
+            string targetHost,
+            X509CertificateCollection localCertificates,
+            X509Certificate remoteCertificate,
+            string[] acceptableIssuers)
+        {
+            var cert = new X509Certificate(_certPath);
+            return cert;
+        }
+
         private static bool ValidateServerCertificate(
               object sender,
               X509Certificate certificate,
               X509Chain chain,
               SslPolicyErrors sslPolicyErrors)
         {
-           if (sslPolicyErrors == SslPolicyErrors.None)
+            if (sslPolicyErrors == SslPolicyErrors.None)
                 return true;
             
+            // Allow self signed certificates for now.
+            if (chain.ChainStatus.Length == 1)
+            {
+                if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors || certificate.Subject == certificate.Issuer)
+                {
+                    if (chain.ChainStatus[0].Status == X509ChainStatusFlags.UntrustedRoot)
+                        return true;
+                }
+            }
+
             // Do not allow this client to communicate with unauthenticated servers.
             return false;
         }
