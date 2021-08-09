@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <PackageId>Skytable.Client</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Martin Molin</Authors>
+    <Company>Ternacode</Company>
+    <PackageTags>Skytable;Storage;StorageScalable;Database;KeyValue;NoSQL;DatabaseDriver;SQL</PackageTags>
+    <Description>
+      The .NET driver for Skytable is a client driver for the free and open source NoSQL database Skytable ported from the official Skytable client.
+    </Description>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/martinmolin/skytable-dotnet</RepositoryUrl>
+    <Copyright>Ternacode</Copyright>
   </PropertyGroup>
 
 </Project>
