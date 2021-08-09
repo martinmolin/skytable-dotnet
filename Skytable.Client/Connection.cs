@@ -25,7 +25,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace Skytable.Client
 {
     /// <summary>A database connection over Skyhash/TCP.</summary>
-    public class Connection
+    public class Connection : IConnection, IDisposable
     {
         /// <summary>Gets the host of this connection.</summary>
         public string Host { get; }
@@ -58,6 +58,18 @@ namespace Skytable.Client
             _buffer = new List<Byte>(BUF_CAP);
             _certPath = certPath;
             AuthenticateSsl();
+        }
+
+        /// <summary>Close the connection.</summary>
+        public void Close()
+        {
+            _client.Close();
+        }
+
+        /// <summary>Dispose of the connection. This will close the connection.</summary>
+        public void Dispose()
+        {
+            Close();
         }
 
         private void AuthenticateSsl()
@@ -168,7 +180,6 @@ namespace Skytable.Client
             _buffer.RemoveRange(0, forward_by);
             return result;
         }
-
 
         /// <summary>
         /// This function will create a GET <see cref="Query"/> and write it to the stream and read the response from the

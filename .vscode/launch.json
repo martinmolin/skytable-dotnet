@@ -46,6 +46,17 @@
             "stopAtEntry": false
         },
         {
+            "name": "Pool",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-pool-example",
+            "program": "${workspaceFolder}/Examples/Pool/bin/Debug/net5.0/Pool.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Examples/Pool/",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"

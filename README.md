@@ -42,7 +42,7 @@ Keep in mind that you can always set up your own custom queries to perform other
 <a name="todo"></a>
 ## TODO:
 - [ ] Create connection async
-- [ ] Thread safe Connection pool
+- [X] Thread safe Connection pool
 - [X] Restructure Example project into Examples
 - [X] Add vscode launch/build tasks for all example projects
 - [ ] Useful Examples
@@ -52,6 +52,7 @@ Keep in mind that you can always set up your own custom queries to perform other
   - [X] BasicAsync Example
   - [X] CustomQuery Example
   - [X] Skyhash Example
+  - [X] Pool Example
 - [ ] Create Benchmark project
 - [ ] Set up Releases
     - [ ] Set up GHA
