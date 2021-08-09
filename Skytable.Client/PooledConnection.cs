@@ -4,6 +4,7 @@ using Skytable.Client.Querying;
 
 namespace Skytable.Client
 {
+    /// <summary>A pooled database connection over Skyhash/TCP.</summary>
     public class PooledConnection : IConnection, IDisposable
     {
         private ConnectionPool _pool;
@@ -17,6 +18,7 @@ namespace Skytable.Client
             _connectionType = connectionType;
         }
 
+        /// <summary>Dispose of the pooled connection, returning it to the pool or closing it if it was a temporary connection.</summary>
         public void Dispose()
         {
             if (_connectionType == ConnectionType.Pooled)

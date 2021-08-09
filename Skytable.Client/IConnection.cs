@@ -5,7 +5,7 @@ namespace Skytable.Client
 {
     public interface IConnection
     {
-                /// <summary>
+        /// <summary>
         /// This function will create a GET <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
