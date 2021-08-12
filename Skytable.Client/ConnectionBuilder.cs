@@ -32,7 +32,7 @@ namespace Skytable.Client
 
         }
 
-        /// <summary>Sets the Host that the connection should be made to.</summary>
+        /// <summary>Sets the Host that the connection should be made to. Default is '127.0.0.1'.</summary>
         /// <param name="host">The host that the connection should be made to.</param>
         public ConnectionBuilder Host(string host)
         {
@@ -40,7 +40,7 @@ namespace Skytable.Client
             return this;
         }
 
-        /// <summary>Sets the Port that the connection should be made to.</summary>
+        /// <summary>Sets the Port that the connection should be made to. Default is '2003'.</summary>
         /// <param name="port">The port that the connection should be made to.</param>
         public ConnectionBuilder Port(ushort port)
         {
@@ -48,14 +48,19 @@ namespace Skytable.Client
             return this;
         }
 
-        /// <summary>Enables TLS on the connection.</summary>
+        /// <summary>Enables TLS on the connection using the provided certificate file.</summary>
+        /// <param name="certPath">The path to the certificate file that should be used for the communication.</param>
         public ConnectionBuilder UseTls(string certPath)
         {
             _certPath = certPath;
             return this;
         }
 
-        /// <summary>Creates the <see cref="Connection"/> and connects to the Skytable server.</summary>
+        /// <summary>
+        /// Creates the <see cref="Connection"/> and connects to the Skytable instance.
+        /// If a certificate path has been provided through the <see cref="ConnectionBuilder.UseTls"/> function it will attempt to
+        /// connect to the Skytable instance securely.
+        ///</summary>
         public Connection Build()
         {
             if (string.IsNullOrEmpty(_certPath))
