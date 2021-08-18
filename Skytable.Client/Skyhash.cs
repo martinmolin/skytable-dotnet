@@ -12,6 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using Skytable.Client.Querying;
 
@@ -31,6 +33,9 @@ namespace Skytable.Client
             {
                 case ElementType.String:
                     return JsonSerializer.Deserialize<T>(response.Element.Item as string);
+                case ElementType.BinaryString:
+                    var bytes = (response.Element.Item as List<byte>).ToArray();
+                    return JsonSerializer.Deserialize<T>(bytes);
                 default:
                     return default(T);
             }

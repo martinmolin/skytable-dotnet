@@ -79,7 +79,7 @@ namespace Skytable.Client.Parsing
                     var u64 = ParseNextU64();
                     return new Element(u64);
                 case SKYHASH_ARRAY:
-                    var array = ParseNextArray();
+                    var array = ParseNextArray(); //TODO: Recursive
                     return new Element(array);
                 case SKYHASH_RESPCODE:
                     var respCode = ParseNextRespCode();
@@ -90,24 +90,22 @@ namespace Skytable.Client.Parsing
                 case SKYHASH_BINARYSTRING:
                     var binaryString = ParseNextBinaryString();
                     return new Element(binaryString);
-                // case SKYHASH_TYPEDARRAY:
-                //     // hmmm, a typed array; let's check the tsymbol
-                //     if (_buffer.Count < _cursor)
-                //         throw new ParseException(ParseError.NotEnough);
+                case SKYHASH_TYPEDARRAY:
+                     // hmmm, a typed array; let's check the tsymbol
+                    if (_buffer.Count < _cursor)
+                        throw new ParseException(ParseError.NotEnough);
 
-                //     // got tsymbol, let's skip it too
-                //     var typed_tsymbol = _buffer[_cursor++];
-                //     switch(typed_tsymbol)
-                //     {
-                //         case SKYHASH_STRING:
-                //             //b'+' => Element::Array(Array::Str(self.parse_next_typed_array_str()?)),
-                //             break;
-                //         case SKYHASH_BINARYSTRING:
-                //             //b'?' => Element::Array(Array::Bin(self.parse_next_typed_array_bin()?)),
-                //             break;
-                //         default:
-                //             throw new ParseException(ParseError.UnknownDataType)
-                //     }
+                    // got tsymbol, let's skip it too
+                    var typed_tsymbol = _buffer[_cursor++];
+                    switch(typed_tsymbol)
+                    {
+                        case SKYHASH_STRING:
+                            return new Element(ParseNextTypedArrayStr());
+                        case SKYHASH_BINARYSTRING:
+                            return new Element(ParseNextTypedArrayBin());
+                        default:
+                            throw new ParseException(ParseError.UnknownDataType);
+                    }
                 default:
                     throw new NotImplementedException($"The tsymbol '{tsymbol}' is not yet implemented.");
             }
@@ -121,7 +119,7 @@ namespace Skytable.Client.Parsing
                 throw new ParseException(ParseError.NotEnough);
             
             var size = (int)ParseSize(line);
-            var elements = new List<Element>((int)size);
+            var elements = new List<Element>(size);
             for (int i = 0; i < size; i++)
             {
                 elements.Add(ParseNextElement());
@@ -137,7 +135,7 @@ namespace Skytable.Client.Parsing
                 throw new ParseException(ParseError.NotEnough);
             
             var size = (int)ParseSize(line);
-            var elements = new List<string>((int)size);
+            var elements = new List<string>(size);
             for (int i = 0; i < size; i++)
             {
                 if (_buffer.Count < _cursor)
@@ -149,6 +147,42 @@ namespace Skytable.Client.Parsing
                     throw new ParseException(ParseError.UnknownDataType);
 
                 elements.Add(ParseNextString());
+            }
+            return elements;
+        }
+
+        private List<string> ParseNextTypedArrayStr()
+        {
+            var (startedAt, stoppedAt) = ReadLine();
+            var line = _buffer.GetRange(startedAt, stoppedAt - startedAt);
+            if (line.Count == 0)
+                throw new ParseException(ParseError.NotEnough);
+
+            // so we have a size chunk; let's get the size
+            var size = (int)ParseSize(line);
+            var elements = new List<string>(size);
+            for (int i = 0; i < size; i++)
+            {
+                // no tsymbol, just elements and their sizes
+                elements.Add(ParseNextStringNullcheck());
+            }
+            return elements;
+        }
+
+        private List<List<byte>> ParseNextTypedArrayBin()
+        {
+            var (startedAt, stoppedAt) = ReadLine();
+            var line = _buffer.GetRange(startedAt, stoppedAt - startedAt);
+            if (line.Count == 0)
+                throw new ParseException(ParseError.NotEnough);
+
+            // so we have a size chunk; let's get the size
+            var size = (int)ParseSize(line);
+            var elements = new List<List<byte>>(size);
+            for (int i = 0; i < size; i++)
+            {
+                // no tsymbol, just elements and their sizes
+                elements.Add(ParseNextBinaryStringNullcheck());
             }
             return elements;
         }
@@ -227,6 +261,37 @@ namespace Skytable.Client.Parsing
             }
 
             throw new ParseException(ParseError.UnexpectedByte);
+        }
+
+        /// Parse the next null checked element
+        public List<byte> ParseNextChunkNullcheck()
+        {
+            var (startedAt, stoppedAt) = ReadLine();
+            var sizeLine = _buffer.GetRange(startedAt, stoppedAt - startedAt);
+            if (sizeLine.Count == 0)
+                throw new ParseException(ParseError.NotEnough);
+
+            var stringSize = (int)ParseSize(sizeLine);
+            return ReadUntil(stringSize);
+        }
+
+        public List<byte> ParseNextBinaryStringNullcheck()
+        {
+            var ourChunk = ParseNextChunkNullcheck();
+            if (WillCursorGiveLineFeed())
+            {
+                _cursor++;
+                return ourChunk;
+            }
+            throw new ParseException(ParseError.UnexpectedByte);
+        }
+
+        public string ParseNextStringNullcheck()
+        {
+            var ourChunk = ParseNextBinaryStringNullcheck();
+            if (ourChunk == null)
+                return null;
+            return Encoding.UTF8.GetString(ourChunk.ToArray());
         }
 
         private RespCode ParseNextRespCode()

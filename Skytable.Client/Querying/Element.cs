@@ -60,12 +60,25 @@ namespace Skytable.Client.Querying
             Type = ElementType.BinaryString;
         }
 
+        internal Element(List<List<byte>> binaryStrings)
+        {
+            Item = binaryStrings;
+            Type = ElementType.FlatArray;
+        }
+
         /// <summary>Returns a string with the format ElementType(Item).</summary>
         public override string ToString()
         {
             if (Item == null)
                 return $"{Type}({base.ToString()})";
-            return $"{Type}({Item})";
+            switch (Type)
+            {
+                case ElementType.BinaryString:
+                    return $"{Type}({string.Join(", ", Item as List<byte>)})";
+                default:
+                    return $"{Type}({Item})";
+            }
+            
         }
     }
 }
