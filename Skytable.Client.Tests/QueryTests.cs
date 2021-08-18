@@ -19,7 +19,7 @@ namespace Skytable.Client.Tests
             {
                 query.WriteTo(memoryStream);
                 var queryData = memoryStream.ToArray();
-                var expectedQuery = "*1\n_2\n+3\nGET\n+7\nTestKey\n";
+                var expectedQuery = "*1\n~2\n3\nGET\n7\nTestKey\n";
                 var expectedQueryData = System.Text.Encoding.UTF8.GetBytes(expectedQuery);
                 Assert.True(SpansEqual(expectedQueryData, queryData));
             }
@@ -36,7 +36,7 @@ namespace Skytable.Client.Tests
             {
                 await query.WriteToAsync(memoryStream);
                 var queryData = memoryStream.ToArray();
-                var expectedQuery = "*1\n_2\n+3\nGET\n+7\nTestKey\n";
+                var expectedQuery = "*1\n~2\n3\nGET\n7\nTestKey\n";
                 var expectedQueryData = System.Text.Encoding.UTF8.GetBytes(expectedQuery);
                 Assert.True(SpansEqual(expectedQueryData, queryData));
             }
@@ -55,7 +55,7 @@ namespace Skytable.Client.Tests
                 query.WriteTo(memoryStream);
                 var queryData = memoryStream.ToArray();
                 
-                var expectedQuery = "*1\n_3\n+3\nSET\n+7\nTestKey\n+9\nTestValue\n";
+                var expectedQuery = "*1\n~3\n3\nSET\n7\nTestKey\n9\nTestValue\n";
                 var expectedQueryData = System.Text.Encoding.UTF8.GetBytes(expectedQuery);
                 Assert.True(SpansEqual(expectedQueryData, queryData));
             }
@@ -74,7 +74,7 @@ namespace Skytable.Client.Tests
                 await query.WriteToAsync(memoryStream);
                 var queryData = memoryStream.ToArray();
                 
-                var expectedQuery = "*1\n_3\n+3\nSET\n+7\nTestKey\n+9\nTestValue\n";
+                var expectedQuery = "*1\n~3\n3\nSET\n7\nTestKey\n9\nTestValue\n";
                 var expectedQueryData = System.Text.Encoding.UTF8.GetBytes(expectedQuery);
                 Assert.True(SpansEqual(expectedQueryData, queryData));
             }
