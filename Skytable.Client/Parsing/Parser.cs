@@ -22,13 +22,15 @@ namespace Skytable.Client.Parsing
     public class Parser
     {
         // SKYHASH protocol constants
-        private const byte SKYHASH_HEADER    = 42;  // *
-        private const byte SKYHASH_LINEFEED  = 10;  // \n
-        private const byte SKYHASH_STRING    = 43;  // +
-        private const byte SKYHASH_U64       = 58;  // :
-        private const byte SKYHASH_ARRAY     = 38;  // &
-        private const byte SKYHASH_RESPCODE  = 33;  // !
-        private const byte SKYHASH_FLATARRAY = 95;  // _
+        private const byte SKYHASH_HEADER       = 42;  // *
+        private const byte SKYHASH_LINEFEED     = 10;  // \n
+        private const byte SKYHASH_STRING       = 43;  // +
+        private const byte SKYHASH_U64          = 58;  // :
+        private const byte SKYHASH_ARRAY        = 38;  // &
+        private const byte SKYHASH_RESPCODE     = 33;  // !
+        private const byte SKYHASH_FLATARRAY    = 95;  // _
+        private const byte SKYHASH_BINARYSTRING = 63;  // ?
+        private const byte SKYHASH_TYPEDARRAY   = 64;  // @
 
         private int _cursor;
         private List<byte> _buffer;
@@ -85,6 +87,27 @@ namespace Skytable.Client.Parsing
                 case SKYHASH_FLATARRAY:
                     var flatArray = ParseNextFlatArray();
                     return new Element(flatArray);
+                case SKYHASH_BINARYSTRING:
+                    var binaryString = ParseNextBinaryString();
+                    return new Element(binaryString);
+                // case SKYHASH_TYPEDARRAY:
+                //     // hmmm, a typed array; let's check the tsymbol
+                //     if (_buffer.Count < _cursor)
+                //         throw new ParseException(ParseError.NotEnough);
+
+                //     // got tsymbol, let's skip it too
+                //     var typed_tsymbol = _buffer[_cursor++];
+                //     switch(typed_tsymbol)
+                //     {
+                //         case SKYHASH_STRING:
+                //             //b'+' => Element::Array(Array::Str(self.parse_next_typed_array_str()?)),
+                //             break;
+                //         case SKYHASH_BINARYSTRING:
+                //             //b'?' => Element::Array(Array::Bin(self.parse_next_typed_array_bin()?)),
+                //             break;
+                //         default:
+                //             throw new ParseException(ParseError.UnknownDataType)
+                //     }
                 default:
                     throw new NotImplementedException($"The tsymbol '{tsymbol}' is not yet implemented.");
             }
@@ -120,6 +143,7 @@ namespace Skytable.Client.Parsing
                 if (_buffer.Count < _cursor)
                     throw new ParseException(ParseError.NotEnough);
                 
+                // TODO: +, ?, !, : should be supported here. Not just +.
                 var tsymbol = _buffer[_cursor++];
                 if (tsymbol != SKYHASH_STRING)
                     throw new ParseException(ParseError.UnknownDataType);
@@ -185,6 +209,21 @@ namespace Skytable.Client.Parsing
             {
                 _cursor++;
                 return ourString;
+            }
+
+            throw new ParseException(ParseError.UnexpectedByte);
+        }
+
+        private List<byte> ParseNextBinaryString()
+        {
+            var ourStringChunk = GetNextElement();
+            if (WillCursorGiveLineFeed())
+            {
+                // there is a lf after the end of the binary string; great!
+                // let's skip that now
+                _cursor++;
+                // let's return our string
+                return ourStringChunk;
             }
 
             throw new ParseException(ParseError.UnexpectedByte);

@@ -17,7 +17,7 @@ namespace Skytable.Client.Querying
     /// <summary>This enum represents the data types supported by the Skyhash Protocol.</summary>
     public enum ElementType
     {
-        /// <summary>A binary/unicode string value; `<tsymbol>` is `+`.</summary>
+        /// <summary>A unicode string value; `<tsymbol>` is `+`.</summary>
         String,
         /// <summary>An unsigned integer value; `<tsymbol>` is `:`.</summary>
         UnsignedInt,
@@ -25,7 +25,9 @@ namespace Skytable.Client.Querying
         Array,
         /// <summary>A response code.</summary>
         RespCode,
-        /// <summary>A non-recursive String array; tsymbol: `_`.</summary>
-        FlatArray
+        /// <summary>A non-recursive String array; `<tsymbol>` is `_`.</summary>
+        FlatArray,
+        /// <summary>A binary string value; `<tsymbol>` is `+`.</summary>
+        BinaryString
     }
 }
