@@ -144,7 +144,26 @@ namespace Skytable.Client
                     throw new Exception("ConnectionReset");
 
                 _buffer.AddRange(buffer[..read]);
-                return ParseResponse();
+
+                var responseResult = ParseResponse();
+                if (responseResult.IsOk)
+                    return responseResult.Item;
+
+                switch (responseResult.Error)
+                {
+                    case ParseError.NotEnough:
+                        continue; // We need to read again to get the complete response.
+                    case ParseError.UnexpectedByte:
+                    case ParseError.BadPacket:
+                        _buffer.Clear();
+                        return null;//Err(SkyhashError::InvalidResponse.into());
+                    case ParseError.DataTypeParseError:
+                        return null; //Err(SkyhashError::ParseError.into())
+                    case ParseError.UnknownDataType:
+                        return null; //Err(SkyhashError::UnknownDataType.into())
+                    case ParseError.Empty:
+                        return null; //Err(IoError::from(ErrorKind::ConnectionReset).into())
+                }
             }
         }
 
@@ -165,15 +184,34 @@ namespace Skytable.Client
                     throw new Exception("ConnectionReset");
 
                 _buffer.AddRange(buffer[..read]);
-                return ParseResponse();
+                
+                var responseResult = ParseResponse();
+                if (responseResult.IsOk)
+                    return responseResult.Item;
+
+                switch (responseResult.Error)
+                {
+                    case ParseError.NotEnough:
+                        continue; // We need to read again to get the complete response.
+                    case ParseError.UnexpectedByte:
+                    case ParseError.BadPacket:
+                        _buffer.Clear();
+                        return null;//Err(SkyhashError::InvalidResponse.into());
+                    case ParseError.DataTypeParseError:
+                        return null; //Err(SkyhashError::ParseError.into())
+                    case ParseError.UnknownDataType:
+                        return null; //Err(SkyhashError::UnknownDataType.into())
+                    case ParseError.Empty:
+                        return null; //Err(IoError::from(ErrorKind::ConnectionReset).into())
+                }
             }
         }
 
-        private Response ParseResponse()
+        private ParseResult<Response> ParseResponse()
         {
             // The connection was possibly reset
             if (_buffer.Count == 0)
-                throw new ParseException(ParseError.Empty);
+                return ParseResult<Response>.Err(ParseError.Empty);
 
             var parser = new Parser(_buffer);
             var (result, forward_by) = parser.Parse();

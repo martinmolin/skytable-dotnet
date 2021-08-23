@@ -18,6 +18,7 @@ namespace Skytable.Client.Parsing
     public class ParseException : System.Exception
     {
         public ParseError Error { get; }
+
         public ParseException(ParseError error)
         {
             Error = error;

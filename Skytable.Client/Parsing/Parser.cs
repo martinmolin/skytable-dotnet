@@ -41,280 +41,356 @@ namespace Skytable.Client.Parsing
             _buffer = buffer;
         }
 
-        public (Response, int) Parse()
+        public (ParseResult<Response>, int) Parse()
         {
             var numberOfQueries = ParseMetaframeGetDatagroupCount();
-            if (numberOfQueries == 0)
-                throw new ParseException(ParseError.BadPacket);
+            if (numberOfQueries.IsError)
+                return (ParseResult<Response>.Err(numberOfQueries.Error), _cursor);
+            if (numberOfQueries.Item == 0)
+                return (ParseResult<Response>.Err(ParseError.BadPacket), _cursor);
             
-            if (numberOfQueries == 1)
+            if (numberOfQueries.Item == 1)
             {
-                var element = ParseNextElement();
+                var result = ParseNextElement();
+                if (result.IsError)
+                    return (ParseResult<Response>.Err(result.Error), 0);
                 
-                if (WillCursorGiveChar((char)SKYHASH_HEADER, true))
+                // No need to check result since we pass in true here. Cannot be an Error.
+                if (WillCursorGiveChar((char)SKYHASH_HEADER, true).Item)
                 {
-                    return (new Response(element), _cursor);
+                    return (ParseResult<Response>.Ok(new Response(result.Item)), _cursor);
                 }
 
-                throw new ParseException(ParseError.UnexpectedByte);
+                return (ParseResult<Response>.Err(ParseError.UnexpectedByte), _cursor);
             }
 
             throw new NotSupportedException("Pipelined queries are not supported yet.");
         }
 
-        private Element ParseNextElement()
+        private ParseResult<Element> ParseNextElement()
         {
             if (_buffer.Count < _cursor)
-                throw new ParseException(ParseError.NotEnough);
+                return ParseResult<Element>.Err(ParseError.NotEnough);
 
             var tsymbol = _buffer[_cursor++];
             switch (tsymbol)
             {
                 case SKYHASH_STRING:
                     var str = ParseNextString();
-                    if (str == null)
-                        throw new ParseException(ParseError.DataTypeParseError);
-                    return new Element(str);
+                    if (str.IsError)
+                        return ParseResult<Element>.Err(str.Error);
+                    return ParseResult<Element>.Ok(new Element(str.Item));
                 case SKYHASH_U64:
                     var u64 = ParseNextU64();
-                    return new Element(u64);
+                    if (u64.IsError)
+                        return ParseResult<Element>.Err(u64.Error);
+                    return ParseResult<Element>.Ok(new Element(u64.Item));
                 case SKYHASH_ARRAY:
                     var array = ParseNextArray(); //TODO: Recursive
-                    return new Element(array);
+                    if (array.IsError)
+                        return ParseResult<Element>.Err(array.Error);
+                    return ParseResult<Element>.Ok(new Element(array.Item));
                 case SKYHASH_RESPCODE:
                     var respCode = ParseNextRespCode();
-                    return new Element(respCode);
+                    if (respCode.IsError)
+                        return ParseResult<Element>.Err(respCode.Error);
+                    return ParseResult<Element>.Ok(new Element(respCode.Item));
                 case SKYHASH_FLATARRAY:
                     var flatArray = ParseNextFlatArray();
-                    return new Element(flatArray);
+                    if (flatArray.IsError)
+                        return ParseResult<Element>.Err(flatArray.Error);
+                    return ParseResult<Element>.Ok(new Element(flatArray.Item));
                 case SKYHASH_BINARYSTRING:
                     var binaryString = ParseNextBinaryString();
-                    return new Element(binaryString);
+                    if (binaryString.IsError)
+                        return ParseResult<Element>.Err(binaryString.Error);
+                    return ParseResult<Element>.Ok(new Element(binaryString.Item));
                 case SKYHASH_TYPEDARRAY:
                      // hmmm, a typed array; let's check the tsymbol
                     if (_buffer.Count < _cursor)
-                        throw new ParseException(ParseError.NotEnough);
+                        return ParseResult<Element>.Err(ParseError.NotEnough);
 
                     // got tsymbol, let's skip it too
                     var typed_tsymbol = _buffer[_cursor++];
                     switch(typed_tsymbol)
                     {
                         case SKYHASH_STRING:
-                            return new Element(ParseNextTypedArrayStr());
+                            var typedArrayStr = ParseNextTypedArrayStr();
+                            if (typedArrayStr.IsError)
+                                return ParseResult<Element>.Err(typedArrayStr.Error);
+                            return ParseResult<Element>.Ok(new Element(typedArrayStr.Item));
                         case SKYHASH_BINARYSTRING:
-                            return new Element(ParseNextTypedArrayBin());
+                            var typedArrayBin = ParseNextTypedArrayBin();
+                            if (typedArrayBin.IsError)
+                                return ParseResult<Element>.Err(typedArrayBin.Error);
+                            return ParseResult<Element>.Ok(new Element(typedArrayBin.Item));
                         default:
-                            throw new ParseException(ParseError.UnknownDataType);
+                            return ParseResult<Element>.Err(ParseError.UnknownDataType);
                     }
                 default:
                     throw new NotImplementedException($"The tsymbol '{tsymbol}' is not yet implemented.");
             }
         }
 
-        private List<Element> ParseNextArray()
+        private ParseResult<List<Element>> ParseNextArray()
         {
             var (startedAt, stoppedAt) = ReadLine();
             var line = _buffer.GetRange(startedAt, stoppedAt - startedAt);
             if (line.Count == 0)
-                throw new ParseException(ParseError.NotEnough);
+                return ParseResult<List<Element>>.Err(ParseError.NotEnough);
             
-            var size = (int)ParseSize(line);
-            var elements = new List<Element>(size);
-            for (int i = 0; i < size; i++)
+            var size = ParseSize(line);
+            if (size.IsError)
+                return ParseResult<List<Element>>.Err(size.Error);
+
+            var elements = new List<Element>(size.Item);
+            for (int i = 0; i < size.Item; i++)
             {
-                elements.Add(ParseNextElement());
+                var result = ParseNextElement();
+                if (result.IsError)
+                    return ParseResult<List<Element>>.Err(result.Error);
+
+                elements.Add(result.Item);
             }
-            return elements;
+            return ParseResult<List<Element>>.Ok(elements);
         }
 
-        private List<string> ParseNextFlatArray()
+        private ParseResult<List<string>> ParseNextFlatArray()
         {
             var (startedAt, stoppedAt) = ReadLine();
             var line = _buffer.GetRange(startedAt, stoppedAt - startedAt);
             if (line.Count == 0)
-                throw new ParseException(ParseError.NotEnough);
+                return ParseResult<List<string>>.Err(ParseError.NotEnough);
             
-            var size = (int)ParseSize(line);
-            var elements = new List<string>(size);
-            for (int i = 0; i < size; i++)
+            var size = ParseSize(line);
+            if (size.IsError)
+                return ParseResult<List<string>>.Err(size.Error);
+
+            var elements = new List<string>(size.Item);
+            for (int i = 0; i < size.Item; i++)
             {
                 if (_buffer.Count < _cursor)
-                    throw new ParseException(ParseError.NotEnough);
+                    return ParseResult<List<string>>.Err(ParseError.NotEnough);
                 
                 // TODO: +, ?, !, : should be supported here. Not just +.
                 var tsymbol = _buffer[_cursor++];
                 if (tsymbol != SKYHASH_STRING)
-                    throw new ParseException(ParseError.UnknownDataType);
+                    return ParseResult<List<string>>.Err(ParseError.UnknownDataType);
 
-                elements.Add(ParseNextString());
+                var result = ParseNextString();
+                if (result.IsError)
+                    return ParseResult<List<string>>.Err(result.Error);
+
+                elements.Add(result.Item);
             }
-            return elements;
+
+            return ParseResult<List<string>>.Ok(elements);
         }
 
-        private List<string> ParseNextTypedArrayStr()
+        private ParseResult<List<string>> ParseNextTypedArrayStr()
         {
             var (startedAt, stoppedAt) = ReadLine();
             var line = _buffer.GetRange(startedAt, stoppedAt - startedAt);
             if (line.Count == 0)
-                throw new ParseException(ParseError.NotEnough);
+                return ParseResult<List<string>>.Err(ParseError.NotEnough);
 
             // so we have a size chunk; let's get the size
-            var size = (int)ParseSize(line);
-            var elements = new List<string>(size);
-            for (int i = 0; i < size; i++)
+            var size = ParseSize(line);
+            if (size.IsError)
+                return ParseResult<List<string>>.Err(size.Error);
+
+            var elements = new List<string>(size.Item);
+            for (int i = 0; i < size.Item; i++)
             {
                 // no tsymbol, just elements and their sizes
-                elements.Add(ParseNextStringNullcheck());
+                var result = ParseNextStringNullcheck();
+                if (result.IsError)
+                    return ParseResult<List<string>>.Err(result.Error);
+                elements.Add(result.Item);
             }
-            return elements;
+            return ParseResult<List<string>>.Ok(elements);
         }
 
-        private List<List<byte>> ParseNextTypedArrayBin()
+        private ParseResult<List<List<byte>>> ParseNextTypedArrayBin()
         {
             var (startedAt, stoppedAt) = ReadLine();
             var line = _buffer.GetRange(startedAt, stoppedAt - startedAt);
             if (line.Count == 0)
-                throw new ParseException(ParseError.NotEnough);
+                return ParseResult<List<List<byte>>>.Err(ParseError.NotEnough);
 
             // so we have a size chunk; let's get the size
-            var size = (int)ParseSize(line);
-            var elements = new List<List<byte>>(size);
-            for (int i = 0; i < size; i++)
+            var size = ParseSize(line);
+            if (size.IsError)
+                return ParseResult<List<List<byte>>>.Err(size.Error);
+
+            var elements = new List<List<byte>>(size.Item);
+            for (int i = 0; i < size.Item; i++)
             {
                 // no tsymbol, just elements and their sizes
-                elements.Add(ParseNextBinaryStringNullcheck());
+                var result = ParseNextBinaryStringNullcheck();
+                if (result.IsError)
+                    return ParseResult<List<List<byte>>>.Err(result.Error);
+                elements.Add(result.Item);
             }
-            return elements;
+            return ParseResult<List<List<byte>>>.Ok(elements);
         }
 
-        private ulong ParseNextU64()
+        private ParseResult<ulong> ParseNextU64()
         {
             var ourU64Chunk = GetNextElement();
-            var ourU64 = ParseU64(ourU64Chunk);
-            if (WillCursorGiveLineFeed())
+            if (ourU64Chunk.IsError)
+                return ParseResult<ulong>.Err(ourU64Chunk.Error);
+
+            var ourU64 = ParseU64(ourU64Chunk.Item);
+            if (ourU64.IsError)
+                return ourU64;
+            
+            var result = WillCursorGiveLineFeed();
+            if (result.IsOk && result.Item)
             {
                 _cursor++;
-                return ourU64;
+                return ParseResult<ulong>.Ok(ourU64.Item);
             }
 
-            throw new ParseException(ParseError.UnexpectedByte);
+            return ParseResult<ulong>.Err(ParseError.UnexpectedByte);
         }
 
-        private List<byte> ReadUntil(int until)
+        private ParseResult<List<byte>> ReadUntil(int until)
         {
             if (_buffer.Count < _cursor + until)
-                throw new ParseException(ParseError.NotEnough);
+                return ParseResult<List<byte>>.Err(ParseError.NotEnough);
 
             var range = _buffer.GetRange(_cursor, until);
             _cursor += until;
-            return range;
+            return ParseResult<List<byte>>.Ok(range);
         }
 
-        private List<byte> GetNextElement()
+        private ParseResult<List<byte>> GetNextElement()
         {
             var (startedAt, stoppedAt) = ReadLine();
             var line = _buffer.GetRange(startedAt, stoppedAt - startedAt);
             var size = ParseSize(line);
-            return ReadUntil((int)size);
+            if (size.IsError)
+                return ParseResult<List<byte>>.Err(size.Error);
+            return ReadUntil(size.Item);
         }
 
-        private bool WillCursorGiveChar(char c, bool thisIfNothingAhead)
+        private ParseResult<bool> WillCursorGiveChar(char c, bool thisIfNothingAhead)
         {
             if (_buffer.Count <= _cursor)
             {
                 if (thisIfNothingAhead)
-                    return true;
-                throw new ParseException(ParseError.NotEnough);
+                    return ParseResult<bool>.Ok(true);
+                return ParseResult<bool>.Err(ParseError.NotEnough);
             }
             
-            return _buffer[_cursor] == c;
+            return ParseResult<bool>.Ok(_buffer[_cursor] == c);
         }
 
-        private bool WillCursorGiveLineFeed()
+        private ParseResult<bool> WillCursorGiveLineFeed()
         {
             return WillCursorGiveChar((char)SKYHASH_LINEFEED, false);
         }
 
-        private string ParseNextString()
+        private ParseResult<string> ParseNextString()
         {
             var ourStringChunk = GetNextElement();
-            var ourString = Encoding.UTF8.GetString(ourStringChunk.ToArray());
-            if (WillCursorGiveLineFeed())
+            if (ourStringChunk.IsError)
+                return ParseResult<string>.Err(ourStringChunk.Error);
+
+            var ourString = Encoding.UTF8.GetString(ourStringChunk.Item.ToArray());
+            var result = WillCursorGiveLineFeed();
+            if (result.IsOk && result.Item)
             {
                 _cursor++;
-                return ourString;
+                return ParseResult<string>.Ok(ourString);
             }
 
-            throw new ParseException(ParseError.UnexpectedByte);
+            return ParseResult<string>.Err(ParseError.UnexpectedByte);
         }
 
-        private List<byte> ParseNextBinaryString()
+        private ParseResult<List<byte>> ParseNextBinaryString()
         {
             var ourStringChunk = GetNextElement();
-            if (WillCursorGiveLineFeed())
+            if (ourStringChunk.IsError)
+                return ourStringChunk;
+
+            var result = WillCursorGiveLineFeed();
+            if (result.IsOk && result.Item)
             {
                 // there is a lf after the end of the binary string; great!
                 // let's skip that now
                 _cursor++;
                 // let's return our string
-                return ourStringChunk;
+                return ParseResult<List<byte>>.Ok(ourStringChunk.Item);
             }
 
-            throw new ParseException(ParseError.UnexpectedByte);
+            return ParseResult<List<byte>>.Err(ParseError.UnexpectedByte);
         }
 
         /// Parse the next null checked element
-        public List<byte> ParseNextChunkNullcheck()
+        public ParseResult<List<byte>> ParseNextChunkNullcheck()
         {
             var (startedAt, stoppedAt) = ReadLine();
             var sizeLine = _buffer.GetRange(startedAt, stoppedAt - startedAt);
             if (sizeLine.Count == 0)
-                throw new ParseException(ParseError.NotEnough);
+                return ParseResult<List<byte>>.Err(ParseError.NotEnough);
 
-            var stringSize = (int)ParseSize(sizeLine);
-            return ReadUntil(stringSize);
+            var result = ParseSize(sizeLine);
+            if (result.IsError)
+                return ParseResult<List<byte>>.Err(result.Error);
+            return ReadUntil(result.Item);
         }
 
-        public List<byte> ParseNextBinaryStringNullcheck()
+        public ParseResult<List<byte>> ParseNextBinaryStringNullcheck()
         {
             var ourChunk = ParseNextChunkNullcheck();
-            if (WillCursorGiveLineFeed())
+            if (ourChunk.IsError)
+                return ourChunk;
+            
+            var result = WillCursorGiveLineFeed();
+            if (result.IsOk && result.Item)
             {
                 _cursor++;
-                return ourChunk;
+                return ParseResult<List<byte>>.Ok(ourChunk.Item);
             }
-            throw new ParseException(ParseError.UnexpectedByte);
+            return ParseResult<List<byte>>.Err(ParseError.UnexpectedByte);
         }
 
-        public string ParseNextStringNullcheck()
+        public ParseResult<string> ParseNextStringNullcheck()
         {
             var ourChunk = ParseNextBinaryStringNullcheck();
-            if (ourChunk == null)
-                return null;
-            return Encoding.UTF8.GetString(ourChunk.ToArray());
+            if (ourChunk.IsError)
+                return ParseResult<string>.Err(ourChunk.Error);
+
+            return ParseResult<string>.Ok(Encoding.UTF8.GetString(ourChunk.Item.ToArray()));
         }
 
-        private RespCode ParseNextRespCode()
+        private ParseResult<RespCode> ParseNextRespCode()
         {
             var ourRespcodeChunk = GetNextElement();
-            var ourRespCode = Encoding.UTF8.GetString(ourRespcodeChunk.ToArray());
-            if (WillCursorGiveLineFeed())
+            if (ourRespcodeChunk.IsError)
+                return ParseResult<RespCode>.Err(ourRespcodeChunk.Error);
+
+            var ourRespCode = Encoding.UTF8.GetString(ourRespcodeChunk.Item.ToArray());
+            var result = WillCursorGiveLineFeed();
+            if (result.IsOk && result.Item)
             {
                 _cursor++;
-                return Enum.Parse<RespCode>(ourRespCode);
+                return ParseResult<RespCode>.Ok(Enum.Parse<RespCode>(ourRespCode));
             }
 
-            throw new ParseException(ParseError.UnexpectedByte);
+            return ParseResult<RespCode>.Err(ParseError.UnexpectedByte);
         }
 
         /// This will return the number of datagroups present in this query packet
         ///
         /// This **will forward the cursor itself**
-        private nuint ParseMetaframeGetDatagroupCount()
+        private ParseResult<int> ParseMetaframeGetDatagroupCount()
         {
             // The smallest query we can have is: `*1\n` or 3 chars
-            if (_buffer.Count < 3) 
-                throw new ParseException(ParseError.NotEnough);
+            if (_buffer.Count < 3)
+                return ParseResult<int>.Err(ParseError.NotEnough);
             
             // Now we want to read `*<n>\n`
             var (startedAt, stoppedAt) = ReadLine();
@@ -323,20 +399,20 @@ namespace Skytable.Client.Parsing
             if (ourChunk[0] == SKYHASH_HEADER)
                 return ParseSize(ourChunk.GetRange(1, ourChunk.Count - 1));
 
-            throw new ParseException(ParseError.UnexpectedByte);
+            return ParseResult<int>.Err(ParseError.UnexpectedByte);
         }
 
-        private nuint ParseSize(List<byte> bytes)
+        private ParseResult<int> ParseSize(List<byte> bytes)
         {
             if (bytes.Count == 0)
-                throw new ParseException(ParseError.NotEnough);
+                return ParseResult<int>.Err(ParseError.NotEnough);
             
-            nuint itemSize = 0;
+            int itemSize = 0;
             foreach (byte digit in bytes)
             {
                 var c = (char)digit;
                 if (!char.IsDigit(c))
-                    throw new ParseException(ParseError.DataTypeParseError);
+                    return ParseResult<int>.Err(ParseError.DataTypeParseError);
                 
                 // 48 is the ASCII code for 0, and 57 is the ascii code for 9
                 // so if 0 is given, the subtraction should give 0; similarly
@@ -352,24 +428,24 @@ namespace Skytable.Client.Parsing
                 }
                 catch(OverflowException)
                 {
-                    throw new ParseException(ParseError.DataTypeParseError);
+                    return ParseResult<int>.Err(ParseError.DataTypeParseError);
                 }
             }
 
-            return itemSize;
+            return ParseResult<int>.Ok(itemSize);
         }
 
-        private ulong ParseU64(List<byte> bytes)
+        private ParseResult<ulong> ParseU64(List<byte> bytes)
         {
             if (bytes.Count == 0)
-                throw new ParseException(ParseError.NotEnough);
+                return ParseResult<ulong>.Err(ParseError.NotEnough);
 
             ulong itemU64 = 0;
             foreach (byte digit in bytes)
             {
                 var c = (char)digit;
                 if (!char.IsDigit(c))
-                    throw new ParseException(ParseError.DataTypeParseError);
+                    return ParseResult<ulong>.Err(ParseError.DataTypeParseError);
                 
                 // 48 is the ASCII code for 0, and 57 is the ascii code for 9
                 // so if 0 is given, the subtraction should give 0; similarly
@@ -385,11 +461,11 @@ namespace Skytable.Client.Parsing
                 }
                 catch(OverflowException)
                 {
-                    throw new ParseException(ParseError.DataTypeParseError);
+                    return ParseResult<ulong>.Err(ParseError.DataTypeParseError);
                 }
             }
 
-            return itemU64;
+            return ParseResult<ulong>.Ok(itemU64);
         }
             
 
