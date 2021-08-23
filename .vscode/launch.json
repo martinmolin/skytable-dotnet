@@ -57,6 +57,17 @@
             "stopAtEntry": false
         },
         {
+            "name": "DDL",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-ddl-example",
+            "program": "${workspaceFolder}/Examples/DDL/bin/Debug/net5.0/DDL.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Examples/DDL/",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"

@@ -19,6 +19,7 @@ using Skytable.Client.Querying;
 
 namespace Skytable.Client.Parsing
 {
+    /// <summary>A parser that can parse the packets sent by Skytable.</summary>
     public class Parser
     {
         // SKYHASH protocol constants
@@ -35,12 +36,14 @@ namespace Skytable.Client.Parsing
         private int _cursor;
         private List<byte> _buffer;
 
+        /// <summary>Create a parser that can parse the packets sent by Skytable.</summary>
         public Parser(List<byte> buffer)
         {
             _cursor = 0;
             _buffer = buffer;
         }
 
+        /// <summary>Parse the response. Returns a tuple containing a <see cref="SkyResult<Response>"/> and an integer that contains the cursor's position in the buffer.</summary>
         public (SkyResult<Response>, int) Parse()
         {
             var numberOfQueries = ParseMetaframeGetDatagroupCount();
@@ -366,21 +369,21 @@ namespace Skytable.Client.Parsing
             return SkyResult<string>.Ok(Encoding.UTF8.GetString(ourChunk.Item.ToArray()));
         }
 
-        private SkyResult<RespCode> ParseNextRespCode()
+        private SkyResult<ResponseCode> ParseNextRespCode()
         {
             var ourRespcodeChunk = GetNextElement();
             if (ourRespcodeChunk.IsError)
-                return SkyResult<RespCode>.Err(ourRespcodeChunk.Error);
+                return SkyResult<ResponseCode>.Err(ourRespcodeChunk.Error);
 
             var ourRespCode = Encoding.UTF8.GetString(ourRespcodeChunk.Item.ToArray());
             var result = WillCursorGiveLineFeed();
             if (result.IsOk && result.Item)
             {
                 _cursor++;
-                return SkyResult<RespCode>.Ok(Enum.Parse<RespCode>(ourRespCode));
+                return SkyResult<ResponseCode>.Ok(ResponseCode.From(ourRespCode));
             }
 
-            return SkyResult<RespCode>.Err(ParseError.UnexpectedByte);
+            return SkyResult<ResponseCode>.Err(ParseError.UnexpectedByte);
         }
 
         /// This will return the number of datagroups present in this query packet

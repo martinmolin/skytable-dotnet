@@ -52,7 +52,7 @@ Keep in mind that you can always set up your own custom queries to perform other
 - [X] Add vscode launch/build tasks for all example projects
 - [ ] Useful Examples
   - [ ] TLS ConnectionBuilder Example
-  - [ ] DDL Example
+  - [X] DDL Example
   - [X] Basic Example
   - [X] BasicAsync Example
   - [X] CustomQuery Example
@@ -96,7 +96,7 @@ Keep in mind that you can always set up your own custom queries to perform other
   - [ ] USET
 - [ ] DDL
   - [ ] CREATE
-  - [ ] USE
+  - [X] USE
   - [ ] INSPECT
   - [ ] DROP
 - [ ] Tests

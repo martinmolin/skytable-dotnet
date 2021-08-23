@@ -29,7 +29,7 @@ namespace Skytable.Client.Querying
         PacketError = 4,
         /// <summary>An error occurred on the server side.</summary>
         ServerError = 5,
-        /// <summary>Some other error occurred and the server returned a description of this error. See this <see href="https://docs.skytable.io/protocol/errors">document</see></summary>
+        /// <summary>Some other error occurred and the server returned a description of this error. See this <see href="https://docs.skytable.io/protocol/errors">document</see>.</summary>
         OtherError = 6,
         /// <summary>WrongType Error.</summary>
         WrongType = 7

@@ -29,6 +29,7 @@ namespace Skytable.Client
     {
         /// <summary>Gets the host of this connection.</summary>
         public string Host { get; }
+        public string Entity { get; private set; } = "default:default";
 
         private string _certPath;        
         private const ushort BUF_CAP = 4096;
@@ -327,6 +328,42 @@ namespace Skytable.Client
             query.Push(key);
             query.Push(value.Into());
             return await RunSimpleQueryAsync(query);
+        }
+
+        /// <summary>
+        /// This function will create a USE <see cref="Query"/> and write it to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public SkyResult<Response> Use(string keyspace, string table)
+        {
+            var entity = string.Join(':', keyspace, table);
+            var query = new Query();
+            query.Push("use");
+            query.Push(entity);
+            var result = RunSimpleQuery(query);
+            if (result.IsOk) // TODO: Check if the Response Element is Okay.
+                Entity = entity;
+
+            return result;
+        }
+
+        /// <summary>
+        /// This function will create a USE <see cref="Query"/> and write it to the stream and read the response asynchronously from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public async Task<SkyResult<Response>> UseAsync(string keyspace, string table)
+        {
+            var entity = string.Join(':', keyspace, table);
+            var query = new Query();
+            query.Push("use");
+            query.Push(entity);
+            var result = await RunSimpleQueryAsync(query);
+            if (result.IsOk) // TODO: Check if the Response Element is Okay.
+                Entity = entity;
+
+            return result;
         }
     }
 }

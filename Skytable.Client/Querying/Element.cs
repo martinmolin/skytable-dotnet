@@ -21,6 +21,7 @@ namespace Skytable.Client.Querying
     {
         /// <summary>Gets the object that this element represents. It is of type <see cref="ElementType"/>.</summary>
         public object Item { get; }
+        
         /// <summary>Gets the <see cref="ElementType"/> of the Item that this element represents.</summary>
         public ElementType Type { get; }
 
@@ -36,7 +37,7 @@ namespace Skytable.Client.Querying
             Type = ElementType.UnsignedInt;
         }
 
-        internal Element(RespCode r)
+        internal Element(ResponseCode r)
         {
             Item = r;
             Type = ElementType.RespCode;
