@@ -42,7 +42,7 @@ class Program
     }
 }
 ```
-Keep in mind that you can always set up your own custom queries to perform other queries than `SET/GET`, see the projects in `Examples` more details on how to use this library.
+Keep in mind that you can always set up your own custom queries to perform other queries than `SET/GET`, see the projects in `Examples` for more details on how to use this library.
 
 <a name="todo"></a>
 ## TODO:
