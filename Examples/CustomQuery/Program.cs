@@ -1,4 +1,5 @@
-﻿using Skytable.Client;
+﻿using System;
+using Skytable.Client;
 using Skytable.Client.Querying;
 
 namespace CustomQuery
@@ -23,6 +24,11 @@ namespace CustomQuery
 
             // Response contains the values of both 'KeyOne' and 'KeyTwo'.
             var mgetResponse = connection.RunSimpleQuery(query);
+
+            if (mgetResponse.IsOk)
+                Console.WriteLine(mgetResponse.Item);
+            else
+                Console.WriteLine(mgetResponse.Error);
         }
     }
 }

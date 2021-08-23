@@ -46,7 +46,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
         /// </summary>
-        public Response Get(string key)
+        public SkyResult<Response> Get(string key)
         {
             return _connection.Get(key);
         }
@@ -56,7 +56,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
         /// </summary>
-        public async Task<Response> GetAsync(string key)
+        public async Task<SkyResult<Response>> GetAsync(string key)
         {
             return await _connection.GetAsync(key);
         }
@@ -66,7 +66,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and try to return type T if successful.
         /// </summary>
-        public T Get<T>(string key) where T: Skyhash, new()
+        public SkyResult<T> Get<T>(string key) where T: Skyhash, new()
         {
             return _connection.Get<T>(key);
         }
@@ -76,7 +76,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and try to return type T if successful.
         /// </summary>
-        public async Task<T> GetAsync<T>(string key) where T: Skyhash, new()
+        public async Task<SkyResult<T>> GetAsync<T>(string key) where T: Skyhash, new()
         {
             return await _connection.GetAsync<T>(key);
         }
@@ -86,7 +86,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
         /// </summary>
-        public Response Set(string key, string value)
+        public SkyResult<Response> Set(string key, string value)
         {
             return _connection.Set(key, value);
         }
@@ -96,7 +96,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
         /// </summary>
-        public async Task<Response> SetAsync(string key, string value)
+        public async Task<SkyResult<Response>> SetAsync(string key, string value)
         {
             return await _connection.SetAsync(key, value);
         }
@@ -106,7 +106,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
         /// </summary>
-        public Response Set(string key, Skyhash value)
+        public SkyResult<Response> Set(string key, Skyhash value)
         {
             return _connection.Set(key, value);
         }
@@ -116,7 +116,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
         /// </summary>
-        public async Task<Response> SetAsync(string key, Skyhash value)
+        public async Task<SkyResult<Response>> SetAsync(string key, Skyhash value)
         {
             return await _connection.SetAsync(key, value);
         }

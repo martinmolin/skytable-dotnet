@@ -1,4 +1,5 @@
-﻿using Skytable.Client;
+﻿using System;
+using Skytable.Client;
 
 namespace Basic
 {
@@ -14,6 +15,11 @@ namespace Basic
 
             // Get the value "MyValue" of the Key 'Basic'.
             var getResponse = connection.Get("Basic");
+
+            if (getResponse.IsOk)
+                Console.WriteLine(getResponse.Item);
+            else
+                Console.WriteLine(getResponse.Error);
         }
     }
 }

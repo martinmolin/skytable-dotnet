@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Skytable.Client;
 
 namespace BasicAsync
@@ -15,6 +16,11 @@ namespace BasicAsync
 
             // Get the value "MyValue" of the Key 'BasicAsync'.
             var getResponse = await connection.GetAsync("BasicAsync");
+            
+            if (getResponse.IsOk)
+                Console.WriteLine(getResponse.Item);
+            else
+                Console.WriteLine(getResponse.Error);
         }
     }
 }

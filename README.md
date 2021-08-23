@@ -32,7 +32,12 @@ class Program
         setPerson.Age = 30;
 
         var connection = new Connection("127.0.0.1", 2003);
+
+        // Serializes and stores the Person as a JSON string in Key `P`.
+        // Response is a SkyResult<Response> which indicates the result of the action.
         var setResponse = connection.Set("P", setPerson);
+
+        // Contains a SkyResult<Person> deserialized from the JSON string retrieved with the Key `P`.
         var getResponse = connection.Get<Person>("P");
     }
 }
@@ -66,6 +71,7 @@ Keep in mind that you can always set up your own custom queries to perform other
     - [ ] RECURSIVE ARRAYS
   - [X] RESPCODE
   - [X] FLATARRAY
+  - [X] BINARYSTRING
 - [ ] Pipelined queries
 - [ ] Actions
   - [ ] DBSIZE

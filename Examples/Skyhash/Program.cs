@@ -1,4 +1,5 @@
-﻿using Skytable.Client;
+﻿using System;
+using Skytable.Client;
 
 namespace SkyhashExample
 {
@@ -26,8 +27,13 @@ namespace SkyhashExample
             // Set the Key 'Person' to a JSON string representing the 'setPerson' object.
             var setResponse = connection.Set("Person", setPerson);
 
-            // 'person' now contains a Person with the name "John Doe" and age 30.
+            // 'person' now contains a SkyResult<Person> with the name "John Doe" and age 30.
             var person = connection.Get<Person>("Person");
+
+            if (person.IsOk)
+                Console.WriteLine($"Name: {person.Item.Name}, Age: {person.Item.Age}");
+            else
+                Console.WriteLine(person.Error);
         }
     }
 }

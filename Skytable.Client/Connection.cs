@@ -132,7 +132,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
         /// </summary>
-        public Response RunSimpleQuery(Query query)
+        public SkyResult<Response> RunSimpleQuery(Query query)
         {
             query.WriteTo(_stream);
 
@@ -145,24 +145,22 @@ namespace Skytable.Client
 
                 _buffer.AddRange(buffer[..read]);
 
-                var responseResult = ParseResponse();
-                if (responseResult.IsOk)
-                    return responseResult.Item;
+                var result = ParseResponse();
+                if (result.IsOk)
+                    return result;
 
-                switch (responseResult.Error)
+                switch (result.Error)
                 {
                     case ParseError.NotEnough:
                         continue; // We need to read again to get the complete response.
                     case ParseError.UnexpectedByte:
                     case ParseError.BadPacket:
                         _buffer.Clear();
-                        return null;//Err(SkyhashError::InvalidResponse.into());
+                        return result;
                     case ParseError.DataTypeParseError:
-                        return null; //Err(SkyhashError::ParseError.into())
                     case ParseError.UnknownDataType:
-                        return null; //Err(SkyhashError::UnknownDataType.into())
                     case ParseError.Empty:
-                        return null; //Err(IoError::from(ErrorKind::ConnectionReset).into())
+                        return result;
                 }
             }
         }
@@ -172,7 +170,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
         /// </summary>
-        public async Task<Response> RunSimpleQueryAsync(Query query)
+        public async Task<SkyResult<Response>> RunSimpleQueryAsync(Query query)
         {
             await query.WriteToAsync(_stream);
 
@@ -184,34 +182,32 @@ namespace Skytable.Client
                     throw new Exception("ConnectionReset");
 
                 _buffer.AddRange(buffer[..read]);
-                
-                var responseResult = ParseResponse();
-                if (responseResult.IsOk)
-                    return responseResult.Item;
 
-                switch (responseResult.Error)
+                var result = ParseResponse();
+                if (result.IsOk)
+                    return result;
+
+                switch (result.Error)
                 {
                     case ParseError.NotEnough:
                         continue; // We need to read again to get the complete response.
                     case ParseError.UnexpectedByte:
                     case ParseError.BadPacket:
                         _buffer.Clear();
-                        return null;//Err(SkyhashError::InvalidResponse.into());
+                        return result;
                     case ParseError.DataTypeParseError:
-                        return null; //Err(SkyhashError::ParseError.into())
                     case ParseError.UnknownDataType:
-                        return null; //Err(SkyhashError::UnknownDataType.into())
                     case ParseError.Empty:
-                        return null; //Err(IoError::from(ErrorKind::ConnectionReset).into())
+                        return result;
                 }
             }
         }
 
-        private ParseResult<Response> ParseResponse()
+        private SkyResult<Response> ParseResponse()
         {
             // The connection was possibly reset
             if (_buffer.Count == 0)
-                return ParseResult<Response>.Err(ParseError.Empty);
+                return SkyResult<Response>.Err(ParseError.Empty);
 
             var parser = new Parser(_buffer);
             var (result, forward_by) = parser.Parse();
@@ -224,7 +220,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
         /// </summary>
-        public Response Get(string key)
+        public SkyResult<Response> Get(string key)
         {
             var query = new Query();
             query.Push("get");
@@ -237,7 +233,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
         /// </summary>
-        public async Task<Response> GetAsync(string key)
+        public async Task<SkyResult<Response>> GetAsync(string key)
         {
             var query = new Query();
             query.Push("get");
@@ -250,13 +246,15 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and try to return type T if successful.
         /// </summary>
-        public T Get<T>(string key) where T: Skyhash, new()
+        public SkyResult<T> Get<T>(string key) where T: Skyhash, new()
         {
             var query = new Query();
             query.Push("get");
             query.Push(key);
             var response = RunSimpleQuery(query);
-            return new T().From<T>(response);
+            if (response.IsOk)
+                return SkyResult<T>.Ok(new T().From<T>(response.Item));
+            return SkyResult<T>.Err(response.Error);
         }
 
         /// <summary>
@@ -264,13 +262,15 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and try to return type T if successful.
         /// </summary>
-        public async Task<T> GetAsync<T>(string key) where T: Skyhash, new()
+        public async Task<SkyResult<T>> GetAsync<T>(string key) where T: Skyhash, new()
         {
             var query = new Query();
             query.Push("get");
             query.Push(key);
             var response = await RunSimpleQueryAsync(query);
-            return new T().From<T>(response);
+            if (response.IsOk)
+                return SkyResult<T>.Ok(new T().From<T>(response.Item));
+            return SkyResult<T>.Err(response.Error);
         }
 
         /// <summary>
@@ -278,7 +278,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
         /// </summary>
-        public Response Set(string key, string value)
+        public SkyResult<Response> Set(string key, string value)
         {
             var query = new Query();
             query.Push("set");
@@ -292,7 +292,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
         /// </summary>
-        public async Task<Response> SetAsync(string key, string value)
+        public async Task<SkyResult<Response>> SetAsync(string key, string value)
         {
             var query = new Query();
             query.Push("set");
@@ -306,7 +306,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
         /// </summary>
-        public Response Set(string key, Skyhash value)
+        public SkyResult<Response> Set(string key, Skyhash value)
         {
             var query = new Query();
             query.Push("set");
@@ -320,7 +320,7 @@ namespace Skytable.Client
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
         /// </summary>
-        public async Task<Response> SetAsync(string key, Skyhash value)
+        public async Task<SkyResult<Response>> SetAsync(string key, Skyhash value)
         {
             var query = new Query();
             query.Push("set");
