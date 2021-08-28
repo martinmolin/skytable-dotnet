@@ -10,6 +10,7 @@ namespace BasicAsync
         {
             // Connect to Skytable
             var connection = new Connection("127.0.0.1", 2003);
+            await connection.ConnectAsync();
 
             // Set the Key 'BasicAsync' to "MyValue"
             var setResponse = await connection.SetAsync("BasicAsync", "MyValue");

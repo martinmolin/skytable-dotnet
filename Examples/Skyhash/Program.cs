@@ -23,6 +23,7 @@ namespace SkyhashExample
 
             // Connect to Skytable
             var connection = new Connection("127.0.0.1", 2003);
+            connection.Connect();
 
             // Set the Key 'Person' to a JSON string representing the 'setPerson' object.
             var setResponse = connection.Set("Person", setPerson);

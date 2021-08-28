@@ -27,38 +27,74 @@ namespace Skytable.Client
     /// <summary>A database connection over Skyhash/TCP.</summary>
     public class Connection : IConnection, IDisposable
     {
-        /// <summary>Gets the host of this connection.</summary>
+        /// <summary>Gets the host that this connection is connected to.</summary>
         public string Host { get; }
+
+        /// <summary>Gets the port that this connection is connected to.</summary>
+        public ushort Port { get; }
+
+        /// <summary>Gets the entity that this connection is connected to.</summary>
         public string Entity { get; private set; } = "default:default";
+
+        /// <summary>Gets the connection state.</summary>
+        public bool IsConnected => _client.Connected;
 
         private string _certPath;        
         private const ushort BUF_CAP = 4096;
+        private const int WSAENOTCONN = 10057;
         private TcpClient _client;
         private Stream _stream;
         private List<byte> _buffer;
         
-        /// <summary>Create a new connection to a Skytable instance hosted on the provided host and port with Tls disabled.</summary>
+        /// <summary>
+        /// Create a new connection to a Skytable instance hosted on the provided host and port with Tls disabled.
+        /// Call <see cref="Connection.Connect"/> or <see cref="Connection.ConnectAsync"/> to connect after creating the connection.
+        ///</summary>
         /// <Param name="host">The host which is running Skytable.</Param>
         /// <Param name="port">The port which the host is running Skytable.</Param>
         public Connection(string host, ushort port)
-        {
-            Host = host;
-            _client = new TcpClient(host, port);
-            _buffer = new List<Byte>(BUF_CAP);
-            _stream = _client.GetStream();
-        }
+            : this (host, port, string.Empty) { }
 
-        /// <summary>Create a new connection to a Skytable instance hosted on the provided host and port with Tls enabled.</summary>
+        /// <summary>
+        /// Create a new connection to a Skytable instance hosted on the provided host and port with Tls enabled.
+        /// Call <see cref="Connection.Connect"/> or <see cref="Connection.ConnectAsync"/> to connect after creating the connection.
+        ///</summary>
         /// <Param name="host">The host which is running Skytable.</Param>
         /// <Param name="port">The port which the host is running Skytable. This has to be configured as a secure port in Skytable.</Param>
         /// <Param name="certPath">Path to the certificate file.</Param>
         public Connection(string host, ushort port, string certPath)
         {
             Host = host;
+            Port = port;
             _client = new TcpClient(host, port);
             _buffer = new List<Byte>(BUF_CAP);
             _certPath = certPath;
-            AuthenticateSsl();
+        }
+
+        /// <summary>
+        /// Open a connection to the Host:Port specified in the constructor.
+        /// If a Certificate path is specified an attempt will be made to set up a secure connection.
+        /// </summary>
+        public void Connect()
+        {
+            _client.Connect(Host, Port);
+            _stream = _client.GetStream();
+
+            if (!string.IsNullOrEmpty(_certPath))
+                AuthenticateSsl();
+        }
+
+        /// <summary>
+        /// Open a connection asynchronously to the Host:Port specified in the constructor.
+        /// If a Certificate path is specified an attempt will be made to set up a secure connection.
+        /// </summary>
+        public async Task ConnectAsync()
+        {
+            await _client.ConnectAsync(Host, Port);
+            _stream = _client.GetStream();
+
+            if (!string.IsNullOrEmpty(_certPath))
+                await AuthenticateSslAsync();
         }
 
         /// <summary>Close the connection.</summary>
@@ -85,6 +121,27 @@ namespace Skytable.Client
             try
             {
                 sslStream.AuthenticateAsClient(Host);
+                _stream = sslStream;
+            }
+            catch (Exception)
+            {
+                _client.Close();
+                throw;
+            }
+        }
+
+        private async Task AuthenticateSslAsync()
+        {
+            var sslStream = new SslStream(
+                _client.GetStream(),
+                false,
+                new RemoteCertificateValidationCallback(ValidateServerCertificate),
+                new LocalCertificateSelectionCallback(SelectCertificate)
+                );
+
+            try
+            {
+                await sslStream.AuthenticateAsClientAsync(Host);
                 _stream = sslStream;
             }
             catch (Exception)
@@ -135,6 +192,9 @@ namespace Skytable.Client
         /// </summary>
         public SkyResult<Response> RunSimpleQuery(Query query)
         {
+            if (!IsConnected)
+                throw new NotConnectedException();
+
             query.WriteTo(_stream);
 
             while (true)
@@ -173,6 +233,9 @@ namespace Skytable.Client
         /// </summary>
         public async Task<SkyResult<Response>> RunSimpleQueryAsync(Query query)
         {
+            if (!IsConnected)
+                throw new NotConnectedException();
+
             await query.WriteToAsync(_stream);
 
             while (true)

@@ -5,12 +5,11 @@
 ## Introduction
 
 The .NET driver for Skytable is a client driver for the free and open source NoSQL database [Skytable](https://github.com/skytable/skytable) ported from the official [Skytable client](https://github.com/skytable/client-rust). First, go ahead and install Skytable by following the instructions [here](https://docs.skytable.io/getting-started). This library supports all Skytable versions that work with the [Skyhash 1.1 Protocol](https://docs.skytable.io/protocol/skyhash).
-This version of the library was tested with the latest Skytable release (release [0.7.0-beta.1](https://github.com/skytable/skytable/releases/tag/v0.7.0-beta.1)).
+This version of the library was tested with the latest Skytable release (release [0.7.0](https://github.com/skytable/skytable/releases/tag/v0.7.0)).
 
 ## Using this library
 
-This library only ships with the bare minimum that is required for interacting with Skytable. Once you have
-Skytable installed and running, you're ready to try the example!
+Once you have Skytable installed and running, you're ready to try the example!
 
 Example usage:
 ```cs
@@ -32,6 +31,7 @@ class Program
         setPerson.Age = 30;
 
         var connection = new Connection("127.0.0.1", 2003);
+        connection.Connect();
 
         // Serializes and stores the Person as a JSON string in Key `P`.
         // Response is a SkyResult<Response> which indicates the result of the action.
@@ -46,7 +46,7 @@ Keep in mind that you can always set up your own custom queries to perform other
 
 <a name="todo"></a>
 ## TODO:
-- [ ] Create connection async
+- [X] Create connection async
 - [X] Thread safe Connection pool
 - [X] Restructure Example project into Examples
 - [X] Add vscode launch/build tasks for all example projects

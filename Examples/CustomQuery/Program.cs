@@ -10,6 +10,7 @@ namespace CustomQuery
         {
             // Connect to Skytable
             var connection = new Connection("127.0.0.1", 2003);
+            connection.Connect();
 
             // Set the Key 'KeyOne' to "MyValueOne"
             var setKeyOneResponse = connection.Set("KeyOne", "MyValueOne");

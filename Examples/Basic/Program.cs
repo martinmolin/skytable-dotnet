@@ -9,6 +9,7 @@ namespace Basic
         {
             // Connect to Skytable
             var connection = new Connection("127.0.0.1", 2003);
+            connection.Connect();
 
             // Set the Key 'Basic' to "MyValue"
             var setResponse = connection.Set("Basic", "MyValue");

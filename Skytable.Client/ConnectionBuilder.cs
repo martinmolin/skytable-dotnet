@@ -12,6 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+using System.Threading.Tasks;
+
 namespace Skytable.Client
 {
     /// <summary>
@@ -63,9 +65,21 @@ namespace Skytable.Client
         ///</summary>
         public Connection Build()
         {
-            if (string.IsNullOrEmpty(_certPath))
-                return new Connection(_host, _port);
-            return new Connection(_host, _port, _certPath);
+            var connection = new Connection(_host, _port, _certPath);
+            connection.Connect();
+            return connection;
+        }
+
+        /// <summary>
+        /// Creates the <see cref="Connection"/> and connects asynchronously to the Skytable instance.
+        /// If a certificate path has been provided through the <see cref="ConnectionBuilder.UseTls"/> function it will attempt to
+        /// connect to the Skytable instance securely.
+        ///</summary>
+        public async Task<Connection> BuildAsync()
+        {
+            var connection = new Connection(_host, _port, _certPath);
+            await connection.ConnectAsync();
+            return connection;
         }
     }
 }

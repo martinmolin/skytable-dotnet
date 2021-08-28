@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace Skytable.Client
 {
@@ -53,8 +54,29 @@ namespace Skytable.Client
                 throw new Exception("This pool has already been initialized"); // TODO: Exception type.
             
             Count = count;
-            for (int i = 0; i < Count; i++)
-                _connections.Enqueue(new Connection(Host, Port));
+            for (int i = 0; i < Count; i++) {
+                var connection = new Connection(Host, Port);
+                connection.Connect();
+                _connections.Enqueue(connection);
+
+            }
+
+            _initialized = true;
+        }
+
+        /// <summary>Initialize the pool asynchronously with the specified amount of connections.</summary>
+        /// <Param name="count">The count of connections that the pool should have.</Param>
+        public async Task InitializeAsync(ushort count)
+        {
+            if (_initialized)
+                throw new Exception("This pool has already been initialized"); // TODO: Exception type.
+            
+            Count = count;
+            for (int i = 0; i < Count; i++) {
+                var connection = new Connection(Host, Port);
+                await connection.ConnectAsync();
+                _connections.Enqueue(connection);
+            }
 
             _initialized = true;
         }

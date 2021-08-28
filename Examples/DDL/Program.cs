@@ -9,6 +9,7 @@ namespace DDL
         {
             // Connect to Skytable
             var connection = new Connection("127.0.0.1", 2003);
+            connection.Connect();
 
             // Change the entity (keyspace:table) that we wish to query.
             var useResponse = connection.Use("MyKeyspace", "MyTable");
