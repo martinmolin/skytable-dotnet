@@ -66,7 +66,7 @@ namespace Skytable.Client
         {
             Host = host;
             Port = port;
-            _client = new TcpClient(host, port);
+            _client = new TcpClient();
             _buffer = new List<Byte>(BUF_CAP);
             _certPath = certPath;
         }

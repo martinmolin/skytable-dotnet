@@ -43,5 +43,13 @@ namespace Skytable.Client.Querying
             else
                 return new ResponseCode(code);
         }
+
+        public override string ToString()
+        {
+            if (Error == null)
+                return Code.ToString();
+            else
+                return $"{Code}({Error})";
+        }
     }   
 }

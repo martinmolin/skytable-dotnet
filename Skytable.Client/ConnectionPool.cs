@@ -23,25 +23,38 @@ namespace Skytable.Client
     {        
         /// <summary>Gets the host that this connection pool is connected to.</summary>
         public string Host { get; }
+
         /// <summary>Gets the port that this connection pool is connected to.</summary>
         public ushort Port { get; }
+
         /// <summary>Gets the count of the connections handled by this pool.</summary>
         public ushort Count { get; private set; }
+        
+        /// <summary>Gets the entity that this connection pool is targeting.</summary>
+        public string Entity { get; }
+
         /// <summary>Gets or sets whether the pool should be able to create temporary connections in the case where it runs out of pooled connections.</summary>
         public bool AllowTemporaryConnections { get; set; }
         
         private ConcurrentQueue<Connection> _connections;
         private volatile ushort _borrowedCount = 0;
         private bool _initialized = false;
+        private string _keyspace;
+        private string _table;
 
         /// <summary>Create a new connection pool to a Skytable instance hosted on the provided host and port with Tls disabled. Call Initialize to create the connections to the Skytable instance.</summary>
         /// <Param name="host">The host which is running Skytable.</Param>
         /// <Param name="port">The port which the host is running Skytable.</Param>
+        /// <Param name="keyspace">The keyspace that the connections of this pool should target.</Param>
+        /// <Param name="table">The table that the connections of this pool should target.</Param>
         /// <Param name="allowTemporaryConnection">Allow the pool to create temporary connections in the case where it runs out of pooled connections.</Param>
-        public ConnectionPool(string host, ushort port, bool allowTemporaryConnection)
+        public ConnectionPool(string host, ushort port, string keyspace, string table, bool allowTemporaryConnection)
         {
             Host = host;
             Port = port;
+            _keyspace = keyspace;
+            _table = table;
+            Entity = string.Join(':', keyspace, table);
             AllowTemporaryConnections = allowTemporaryConnection;
             _connections = new ConcurrentQueue<Connection>();
         }
@@ -52,13 +65,15 @@ namespace Skytable.Client
         {
             if (_initialized)
                 throw new Exception("This pool has already been initialized"); // TODO: Exception type.
+
+            // TODO: Inspect the Skytable database to make sure the target entity exists.
             
             Count = count;
             for (int i = 0; i < Count; i++) {
                 var connection = new Connection(Host, Port);
                 connection.Connect();
+                connection.Use(_keyspace, _table);
                 _connections.Enqueue(connection);
-
             }
 
             _initialized = true;
@@ -71,10 +86,13 @@ namespace Skytable.Client
             if (_initialized)
                 throw new Exception("This pool has already been initialized"); // TODO: Exception type.
             
+            // TODO: Inspect the Skytable database to make sure the target entity exists.
+            
             Count = count;
             for (int i = 0; i < Count; i++) {
                 var connection = new Connection(Host, Port);
                 await connection.ConnectAsync();
+                await connection.UseAsync(_keyspace, _table);
                 _connections.Enqueue(connection);
             }
 

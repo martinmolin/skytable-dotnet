@@ -7,8 +7,9 @@ namespace Pool
     {
         static void Main(string[] args)
         {
-            // Create a connection pool that allow temporary connections
-            var pool = new ConnectionPool("127.0.0.1", 2003, true);
+            // Create a connection pool that targets the entity default:default and
+            // allows temporary connections to be created in case the pool runs out of available connections.
+            var pool = new ConnectionPool("127.0.0.1", 2003, "default", "default", true);
 
             // Initialize the pool with 10 connections.
             pool.Initialize(10);
