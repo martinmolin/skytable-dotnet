@@ -17,13 +17,13 @@ namespace Skytable.Client.Querying
     /// <summary>This enum represents the array types supported by the Skyhash Protocol.</summary>
     public enum ArrayType
     {
-        /// <summary>A binary array; `typed array <tsymbol>` is `?`, `@` base <tsymbol>.</summary>
+        /// <summary>A binary array; `typed array &lt;tsymbol&gt;` is `?`, `@` base &lt;tsymbol&gt;.</summary>
         BinaryString,
-        /// <summary>A unicode string array; `typed array <tsymbol>` is `+`, `@` base <tsymbol>.</summary>
+        /// <summary>A unicode string array; `typed array &lt;tsymbol&gt;` is `+`, `@` base &lt;tsymbol&gt;.</summary>
         String,
-        /// <summary>A non-recursive flat array; `<tsymbol>` is `_`.</summary>
+        /// <summary>A non-recursive flat array; `&lt;tsymbol&gt;` is `_`.</summary>
         Flat,
-        /// <summary>A recursive array; `<tsymbol>` is `&`.</summary>
+        /// <summary>A recursive array; `&lt;tsymbol&gt;` is `&amp;`.</summary>
         Recursive
     }
 }

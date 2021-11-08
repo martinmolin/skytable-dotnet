@@ -43,7 +43,7 @@ namespace Skytable.Client.Parsing
             _buffer = buffer;
         }
 
-        /// <summary>Parse the response. Returns a tuple containing a <see cref="SkyResult<Response>"/> and an integer that contains the cursor's position in the buffer.</summary>
+        /// <summary>Parse the response. Returns a tuple containing a <see cref="SkyResult&lt;Response&gt;"/> and an integer that contains the cursor's position in the buffer.</summary>
         public (SkyResult<Response>, int) Parse()
         {
             var numberOfQueries = ParseMetaframeGetDatagroupCount();
@@ -332,7 +332,7 @@ namespace Skytable.Client.Parsing
         }
 
         /// Parse the next null checked element
-        public SkyResult<List<byte>> ParseNextChunkNullcheck()
+        private SkyResult<List<byte>> ParseNextChunkNullcheck()
         {
             var (startedAt, stoppedAt) = ReadLine();
             var sizeLine = _buffer.GetRange(startedAt, stoppedAt - startedAt);
@@ -345,7 +345,7 @@ namespace Skytable.Client.Parsing
             return ReadUntil(result.Item);
         }
 
-        public SkyResult<List<byte>> ParseNextBinaryStringNullcheck()
+        private SkyResult<List<byte>> ParseNextBinaryStringNullcheck()
         {
             var ourChunk = ParseNextChunkNullcheck();
             if (ourChunk.IsError)
@@ -360,7 +360,7 @@ namespace Skytable.Client.Parsing
             return SkyResult<List<byte>>.Err(ParseError.UnexpectedByte);
         }
 
-        public SkyResult<string> ParseNextStringNullcheck()
+        private SkyResult<string> ParseNextStringNullcheck()
         {
             var ourChunk = ParseNextBinaryStringNullcheck();
             if (ourChunk.IsError)
@@ -470,7 +470,6 @@ namespace Skytable.Client.Parsing
 
             return SkyResult<ulong>.Ok(itemU64);
         }
-            
 
         private (int, int) ReadLine()
         {

@@ -12,6 +12,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+/// <summary>Thrown if the connection is not connected to Skytable while trying to run a query.</summary>
 [System.Serializable]
 public class NotConnectedException : System.Exception
 {

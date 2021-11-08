@@ -16,11 +16,16 @@ using Skytable.Client.Parsing;
 
 namespace Skytable.Client
 {
+    /// <summary>The result of a Skytable Query.</summary>
     public class SkyResult<T>
     {
+        /// <summary>The item of type T if the result is Ok.</summary>
         public T Item { get; }
+        /// <summary>The error in case the result is an Error.</summary>
         public ParseError Error { get; }
+        /// <summary>True if the result was ok. You can use the Item.</summary>
         public bool IsOk { get; }
+        /// <summary>True if the query failed in any way. Check the Error to learn more.</summary>
         public bool IsError { get; }
 
         private SkyResult(T item)

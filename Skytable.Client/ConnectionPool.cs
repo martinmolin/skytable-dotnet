@@ -101,8 +101,8 @@ namespace Skytable.Client
 
         /// <summary>
         /// Returns a connection from the pool if there is one available.
-        /// If no connections are available and <see cref="ConnectionPool.AllowTemporaryConnections"> is set to true, a new temporary connection will be created.
-        /// Otherwise an <see cref="Exception"> will be thrown.
+        /// If no connections are available and <see cref="ConnectionPool.AllowTemporaryConnections" /> is set to true, a new temporary connection will be created.
+        /// Otherwise an <see cref="Exception" /> will be thrown.
         /// </summary>
         public PooledConnection Connection()
         {

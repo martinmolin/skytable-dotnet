@@ -22,7 +22,7 @@ namespace Skytable.Client.Querying
         /// <summary>The actual response code.</summary>
         public RespCode Code { get; }
 
-        /// <summary>A message from the server if the RespCode was <see cref="RespCode.OtherError"/>.</summary>
+        /// <summary>A message from the server if the RespCode was <see cref="RespCode.OtherError" />.</summary>
         public string Error { get; }
 
         private ResponseCode(RespCode code)
@@ -44,6 +44,7 @@ namespace Skytable.Client.Querying
                 return new ResponseCode(code);
         }
 
+        /// <summary>Returns a string containing the code if <see cref="Error" /> is null, otherwise returns a string formatted as "Code(Error)".</summary>
         public override string ToString()
         {
             if (Error == null)

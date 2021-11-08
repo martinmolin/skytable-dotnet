@@ -17,6 +17,7 @@ using Skytable.Client.Querying;
 
 namespace Skytable.Client
 {
+    /// <summary>A database connection interface for Skyhash.</summary>
     public interface IConnection
     {
         /// <summary>
