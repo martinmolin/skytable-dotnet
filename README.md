@@ -93,7 +93,7 @@ Keep in mind that you can always set up your own custom queries to perform other
   - [ ] SSET
   - [ ] SUPDATE
   - [ ] UPDATE
-  - [ ] USET
+  - [X] USET
 - [ ] DDL
   - [ ] CREATE
   - [X] USE

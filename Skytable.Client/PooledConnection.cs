@@ -120,5 +120,45 @@ namespace Skytable.Client
         {
             return await _connection.SetAsync(key, value);
         }
+
+        /// <summary>
+        /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public SkyResult<Response> USet(string key, string value)
+        {
+            return _connection.USet(key, value);
+        }
+
+        /// <summary>
+        /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public async Task<SkyResult<Response>> USetAsync(string key, string value)
+        {
+            return await _connection.USetAsync(key, value);
+        }
+
+        /// <summary>
+        /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public SkyResult<Response> USet(string key, Skyhash value)
+        {
+            return _connection.USet(key, value);
+        }
+
+        /// <summary>
+        /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public async Task<SkyResult<Response>> USetAsync(string key, Skyhash value)
+        {
+            return await _connection.USetAsync(key, value);
+        }
     }
 }

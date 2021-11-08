@@ -394,6 +394,62 @@ namespace Skytable.Client
         }
 
         /// <summary>
+        /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public SkyResult<Response> USet(string key, string value)
+        {
+            var query = new Query();
+            query.Push("uset");
+            query.Push(key);
+            query.Push(value);
+            return RunSimpleQuery(query);
+        }
+
+        /// <summary>
+        /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public async Task<SkyResult<Response>> USetAsync(string key, string value)
+        {
+            var query = new Query();
+            query.Push("uset");
+            query.Push(key);
+            query.Push(value);
+            return await RunSimpleQueryAsync(query);
+        }
+
+        /// <summary>
+        /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public SkyResult<Response> USet(string key, Skyhash value)
+        {
+            var query = new Query();
+            query.Push("uset");
+            query.Push(key);
+            query.Push(value.Into());
+            return RunSimpleQuery(query);
+        }
+
+        /// <summary>
+        /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public async Task<SkyResult<Response>> USetAsync(string key, Skyhash value)
+        {
+            var query = new Query();
+            query.Push("uset");
+            query.Push(key);
+            query.Push(value.Into());
+            return await RunSimpleQueryAsync(query);
+        }
+
+        /// <summary>
         /// This function will create a USE <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
