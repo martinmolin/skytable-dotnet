@@ -101,7 +101,6 @@ namespace Skytable.Client.Tests
                 pipeline.WriteTo(memoryStream);
                 var queryData = memoryStream.ToArray();
                 
-                var stringerrrr = System.Text.Encoding.UTF8.GetString(queryData);
                 var expectedQuery = "*2\n~3\n3\nSET\n5\nBasic\n7\nMyValue\n~2\n3\nGET\n5\nBasic\n";
                 var expectedQueryData = System.Text.Encoding.UTF8.GetBytes(expectedQuery);
                 Assert.True(SpansEqual(expectedQueryData, queryData));
