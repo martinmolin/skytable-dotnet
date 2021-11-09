@@ -68,6 +68,17 @@
             "stopAtEntry": false
         },
         {
+            "name": "Pipelines",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-pipelines-example",
+            "program": "${workspaceFolder}/Examples/Pipelines/bin/Debug/net5.0/Pipelines.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Examples/Pipelines/",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"

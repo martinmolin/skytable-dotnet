@@ -19,10 +19,13 @@ using System.Threading.Tasks;
 namespace Skytable.Client.Querying
 {
     /// <summary>This type represents a single simple query as defined by the Skyhash protocol.</summary>
-    public class Query
+    public class Query : IQueryWriter
     {
         private ushort _sizeCount;
         private List<byte> _holdingBuffer;
+
+        /// <summary>Returns the argument count of the query.</summary>
+        public ushort ArgumentCount => _sizeCount;
         
         /// <summary>Creates an empty query with a no arguments.</summary>
         public Query()
@@ -52,6 +55,16 @@ namespace Skytable.Client.Querying
             var numberOfItemsInDatagroup = System.Text.Encoding.UTF8.GetBytes($"~{_sizeCount}\n");
             stream.Write(numberOfItemsInDatagroup, 0, numberOfItemsInDatagroup.Length);
             stream.Write(_holdingBuffer.ToArray(), 0, _holdingBuffer.Count);
+        }
+
+        /// <summary>Writes the query to the specified list.</summary>
+        public void WriteTo(List<byte> list)
+        {
+            //var header = System.Text.Encoding.UTF8.GetBytes("*1\n");
+            //list.AddRange(header);
+            var numberOfItemsInDatagroup = System.Text.Encoding.UTF8.GetBytes($"~{_sizeCount}\n");
+            list.AddRange(numberOfItemsInDatagroup);
+            list.AddRange(_holdingBuffer);
         }
 
         /// <summary>Writes the query to the specified stream asynchronously.</summary>

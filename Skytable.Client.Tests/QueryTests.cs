@@ -80,6 +80,34 @@ namespace Skytable.Client.Tests
             }
         }
 
+        [Fact]
+        public void CreatePipeline()
+        {
+            var setQuery = new Query();
+            setQuery.Push("SET");
+            setQuery.Push("Basic");
+            setQuery.Push("MyValue");
+
+            var getQuery = new Query();
+            getQuery.Push("GET");
+            getQuery.Push("Basic");
+
+            var pipeline = new Pipeline()
+                .Add(setQuery)
+                .Add(getQuery);
+
+            using (var memoryStream = new MemoryStream())
+            {
+                pipeline.WriteTo(memoryStream);
+                var queryData = memoryStream.ToArray();
+                
+                var stringerrrr = System.Text.Encoding.UTF8.GetString(queryData);
+                var expectedQuery = "*2\n~3\n3\nSET\n5\nBasic\n7\nMyValue\n~2\n3\nGET\n5\nBasic\n";
+                var expectedQueryData = System.Text.Encoding.UTF8.GetBytes(expectedQuery);
+                Assert.True(SpansEqual(expectedQueryData, queryData));
+            }
+        }
+
         private bool SpansEqual(ReadOnlySpan<byte> a1, ReadOnlySpan<byte> a2)
         {
             return a1.SequenceEqual(a2);

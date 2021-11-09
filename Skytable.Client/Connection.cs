@@ -192,10 +192,57 @@ namespace Skytable.Client
         /// </summary>
         public SkyResult<Response> RunSimpleQuery(Query query)
         {
+            if (query.ArgumentCount == 0)
+                throw new Exception("A query cannot be empty!");
+            
+            return RunQuery(query);
+        }
+
+        /// <summary>
+        /// This function will write a <see cref="Query"/> asynchronously to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public async Task<SkyResult<Response>> RunSimpleQueryAsync(Query query)
+        {
+            if (query.ArgumentCount == 0)
+                throw new Exception("A query cannot be empty!");
+
+            return await RunQueryAsync(query);
+        }
+
+        /// <summary>
+        /// This function will write a <see cref="Pipeline"/> to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public SkyResult<Response> RunPipeline(Pipeline pipeline)
+        {
+            if (pipeline.Count == 0)
+                throw new Exception("A Pipeline cannot be empty!");
+
+            return RunQuery(pipeline);
+        }
+
+        /// <summary>
+        /// This function will write a <see cref="Pipeline"/> asynchronously to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public async Task<SkyResult<Response>> RunPipelineAsync(Pipeline pipeline)
+        {
+            if (pipeline.Count == 0)
+                throw new Exception("A Pipeline cannot be empty!");
+
+            return await RunQueryAsync(pipeline);
+        }
+
+        private SkyResult<Response> RunQuery(IQueryWriter queryWriter)
+        {
             if (!IsConnected)
                 throw new NotConnectedException();
 
-            query.WriteTo(_stream);
+            queryWriter.WriteTo(_stream);
 
             while (true)
             {
@@ -226,17 +273,12 @@ namespace Skytable.Client
             }
         }
 
-        /// <summary>
-        /// This function will write a <see cref="Query"/> asynchronously to the stream and read the response from the
-        /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
-        /// </summary>
-        public async Task<SkyResult<Response>> RunSimpleQueryAsync(Query query)
+        private async Task<SkyResult<Response>> RunQueryAsync(IQueryWriter queryWriter)
         {
             if (!IsConnected)
                 throw new NotConnectedException();
 
-            await query.WriteToAsync(_stream);
+            await queryWriter.WriteToAsync(_stream);
 
             while (true)
             {

@@ -72,7 +72,7 @@ Keep in mind that you can always set up your own custom queries to perform other
   - [X] RESPCODE
   - [X] FLATARRAY
   - [X] BINARYSTRING
-- [ ] Pipelined queries
+- [X] Pipelined queries
 - [ ] Actions
   - [ ] DBSIZE
   - [ ] DEL
