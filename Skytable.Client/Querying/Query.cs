@@ -60,8 +60,6 @@ namespace Skytable.Client.Querying
         /// <summary>Writes the query to the specified list.</summary>
         public void WriteTo(List<byte> list)
         {
-            //var header = System.Text.Encoding.UTF8.GetBytes("*1\n");
-            //list.AddRange(header);
             var numberOfItemsInDatagroup = System.Text.Encoding.UTF8.GetBytes($"~{_sizeCount}\n");
             list.AddRange(numberOfItemsInDatagroup);
             list.AddRange(_holdingBuffer);
