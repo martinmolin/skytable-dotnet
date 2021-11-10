@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDL", "Examples\DDL\DDL.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pipelines", "Examples\Pipelines\Pipelines.csproj", "{9AA83BD4-9E24-4114-A5BD-27777DFAEA38}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Skytable.Benchmark", "Skytable.Benchmark\Skytable.Benchmark.csproj", "{672D86CD-1B87-4D4C-9DDA-AE447DB589A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -160,6 +162,18 @@ Global
 		{9AA83BD4-9E24-4114-A5BD-27777DFAEA38}.Release|x64.Build.0 = Release|Any CPU
 		{9AA83BD4-9E24-4114-A5BD-27777DFAEA38}.Release|x86.ActiveCfg = Release|Any CPU
 		{9AA83BD4-9E24-4114-A5BD-27777DFAEA38}.Release|x86.Build.0 = Release|Any CPU
+		{672D86CD-1B87-4D4C-9DDA-AE447DB589A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{672D86CD-1B87-4D4C-9DDA-AE447DB589A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{672D86CD-1B87-4D4C-9DDA-AE447DB589A5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{672D86CD-1B87-4D4C-9DDA-AE447DB589A5}.Debug|x64.Build.0 = Debug|Any CPU
+		{672D86CD-1B87-4D4C-9DDA-AE447DB589A5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{672D86CD-1B87-4D4C-9DDA-AE447DB589A5}.Debug|x86.Build.0 = Debug|Any CPU
+		{672D86CD-1B87-4D4C-9DDA-AE447DB589A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{672D86CD-1B87-4D4C-9DDA-AE447DB589A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{672D86CD-1B87-4D4C-9DDA-AE447DB589A5}.Release|x64.ActiveCfg = Release|Any CPU
+		{672D86CD-1B87-4D4C-9DDA-AE447DB589A5}.Release|x64.Build.0 = Release|Any CPU
+		{672D86CD-1B87-4D4C-9DDA-AE447DB589A5}.Release|x86.ActiveCfg = Release|Any CPU
+		{672D86CD-1B87-4D4C-9DDA-AE447DB589A5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{483431E5-C956-49CE-A430-65637F134617} = {8B772992-4FB8-4335-87BA-2E7CF3257705}
