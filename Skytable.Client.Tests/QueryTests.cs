@@ -81,6 +81,76 @@ namespace Skytable.Client.Tests
         }
 
         [Fact]
+        public void CreateDeleteQuery()
+        {
+            var query = new Query();
+            query.Push("DEL");
+            query.Push("TestKey");
+
+            using (var memoryStream = new MemoryStream())
+            {
+                query.WriteTo(memoryStream);
+                var queryData = memoryStream.ToArray();
+                
+                var expectedQuery = "*1\n~2\n3\nDEL\n7\nTestKey\n";
+                var expectedQueryData = System.Text.Encoding.UTF8.GetBytes(expectedQuery);
+                Assert.True(SpansEqual(expectedQueryData, queryData));
+            }
+        }
+
+        [Fact]
+        public async Task CreateDeleteQueryAsync()
+        {
+            var query = new Query();
+            query.Push("DEL");
+            query.Push("TestKey");
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await query.WriteToAsync(memoryStream);
+                var queryData = memoryStream.ToArray();
+                
+                var expectedQuery = "*1\n~2\n3\nDEL\n7\nTestKey\n";
+                var expectedQueryData = System.Text.Encoding.UTF8.GetBytes(expectedQuery);
+                Assert.True(SpansEqual(expectedQueryData, queryData));
+            }
+        }
+
+        [Fact]
+        public void CreatePopQuery()
+        {
+            var query = new Query();
+            query.Push("POP");
+            query.Push("TestKey");
+
+            using (var memoryStream = new MemoryStream())
+            {
+                query.WriteTo(memoryStream);
+                var queryData = memoryStream.ToArray();
+                var expectedQuery = "*1\n~2\n3\nPOP\n7\nTestKey\n";
+                var expectedQueryData = System.Text.Encoding.UTF8.GetBytes(expectedQuery);
+                Assert.True(SpansEqual(expectedQueryData, queryData));
+            }
+        }
+
+        [Fact]
+        public async Task CreatePopQueryAsync()
+        {
+            var query = new Query();
+            query.Push("POP");
+            query.Push("TestKey");
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await query.WriteToAsync(memoryStream);
+                var queryData = memoryStream.ToArray();
+                var expectedQuery = "*1\n~2\n3\nPOP\n7\nTestKey\n";
+                var expectedQueryData = System.Text.Encoding.UTF8.GetBytes(expectedQuery);
+                Assert.True(SpansEqual(expectedQueryData, queryData));
+            }
+        }
+
+        [Fact]
         public void CreatePipeline()
         {
             var setQuery = new Query();
