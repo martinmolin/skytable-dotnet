@@ -122,6 +122,26 @@ namespace Skytable.Client
         }
 
         /// <summary>
+        /// This function will create a DEL <see cref="Query"/> and write it to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public SkyResult<Response> Delete(string key)
+        {
+            return _connection.Delete(key);
+        }
+
+        /// <summary>
+        /// This function will create a DEL <see cref="Query"/> and write it to the stream and read the response asynchronously from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public async Task<SkyResult<Response>> DeleteAsync(string key)
+        {
+            return await _connection.DeleteAsync(key);
+        }
+
+        /// <summary>
         /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
@@ -159,6 +179,46 @@ namespace Skytable.Client
         public async Task<SkyResult<Response>> USetAsync(string key, Skyhash value)
         {
             return await _connection.USetAsync(key, value);
+        }
+
+        /// <summary>
+        /// This function will create a POP <see cref="Query"/> and write it to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public SkyResult<Response> Pop(string key)
+        {
+            return _connection.Pop(key);
+        }
+
+        /// <summary>
+        /// This function will create a POP <see cref="Query"/> and write it to the stream and read the response asynchronously from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public async Task<SkyResult<Response>> PopAsync(string key)
+        {
+            return await _connection.PopAsync(key);
+        }
+
+        /// <summary>
+        /// This function will create a POP <see cref="Query"/> and write it to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and try to return type T if successful.
+        /// </summary>
+        public SkyResult<T> Pop<T>(string key) where T: Skyhash, new()
+        {
+            return _connection.Pop<T>(key);
+        }
+
+        /// <summary>
+        /// This function will create a POP <see cref="Query"/> and write it to the stream and read the response asynchronously from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and try to return type T if successful.
+        /// </summary>
+        public async Task<SkyResult<T>> PopAsync<T>(string key) where T: Skyhash, new()
+        {
+            return await _connection.PopAsync<T>(key);
         }
     }
 }

@@ -436,6 +436,32 @@ namespace Skytable.Client
         }
 
         /// <summary>
+        /// This function will create a DEL <see cref="Query"/> and write it to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public SkyResult<Response> Delete(string key)
+        {
+            var query = new Query();
+            query.Push("del");
+            query.Push(key);
+            return RunSimpleQuery(query);
+        }
+
+        /// <summary>
+        /// This function will create a DEL <see cref="Query"/> and write it to the stream and read the response asynchronously from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public async Task<SkyResult<Response>> DeleteAsync(string key)
+        {
+            var query = new Query();
+            query.Push("del");
+            query.Push(key);
+            return await RunSimpleQueryAsync(query);
+        }
+
+        /// <summary>
         /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
         /// or invalid and return an appropriate variant of <see cref="Response"/>.
@@ -525,6 +551,64 @@ namespace Skytable.Client
                 Entity = entity;
 
             return result;
+        }
+
+        /// <summary>
+        /// This function will create a POP <see cref="Query"/> and write it to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public SkyResult<Response> Pop(string key)
+        {
+            var query = new Query();
+            query.Push("pop");
+            query.Push(key);
+            return RunSimpleQuery(query);
+        }
+
+        /// <summary>
+        /// This function will create a POP <see cref="Query"/> and write it to the stream and read the response asynchronously from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// </summary>
+        public async Task<SkyResult<Response>> PopAsync(string key)
+        {
+            var query = new Query();
+            query.Push("pop");
+            query.Push(key);
+            return await RunSimpleQueryAsync(query);
+        }
+
+        /// <summary>
+        /// This function will create a POP <see cref="Query"/> and write it to the stream and read the response from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and try to return type T if successful.
+        /// </summary>
+        public SkyResult<T> Pop<T>(string key) where T: Skyhash, new()
+        {
+            var query = new Query();
+            query.Push("pop");
+            query.Push(key);
+            var response = RunSimpleQuery(query);
+            if (response.IsOk)
+                return SkyResult<T>.Ok(new T().From<T>(response.Item));
+            return SkyResult<T>.Err(response.Error);
+        }
+
+        /// <summary>
+        /// This function will create a POP <see cref="Query"/> and write it to the stream and read the response asynchronously from the
+        /// server. It will then determine if the returned response is complete, incomplete
+        /// or invalid and try to return type T if successful.
+        /// </summary>
+        public async Task<SkyResult<T>> PopAsync<T>(string key) where T: Skyhash, new()
+        {
+            var query = new Query();
+            query.Push("pop");
+            query.Push(key);
+            var response = await RunSimpleQueryAsync(query);
+            if (response.IsOk)
+                return SkyResult<T>.Ok(new T().From<T>(response.Item));
+            return SkyResult<T>.Err(response.Error);
         }
     }
 }

@@ -58,7 +58,7 @@ Keep in mind that you can always set up your own custom queries to perform other
 - [X] Pipelined queries
 - [ ] Actions
   - [ ] DBSIZE
-  - [ ] DEL
+  - [X] DEL
   - [ ] EXISTS
   - [ ] FLUSHDB
   - [X] GET
@@ -70,7 +70,7 @@ Keep in mind that you can always set up your own custom queries to perform other
   - [ ] MKSNAP
   - [ ] MSET
   - [ ] MUPDATE
-  - [ ] POP
+  - [X] POP
   - [ ] SDEL
   - [ ] SET
   - [ ] SSET
