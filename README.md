@@ -46,32 +46,15 @@ Keep in mind that you can always set up your own custom queries to perform other
 
 <a name="todo"></a>
 ## TODO:
-- [X] Create connection async
-- [X] Thread safe Connection pool
-- [X] Restructure Example project into Examples
-- [X] Add vscode launch/build tasks for all example projects
-- [ ] Useful Examples
+- [ ] Examples
   - [ ] TLS ConnectionBuilder Example
-  - [X] DDL Example
-  - [X] Basic Example
-  - [X] BasicAsync Example
-  - [X] CustomQuery Example
-  - [X] Skyhash Example
-  - [X] Pool Example
 - [ ] Create Benchmark project
 - [ ] Set up Releases
     - [ ] Set up GHA
     - [ ] Set up nuget
 - [X] Add TLS support (Can connect over TLS but certificate validation might not be secure)
-- [X] Document public API
-- [X] Parse element types
-  - [X] STRING
-  - [X] U64
-  - [X] ARRAY
+- [ ] Parse element types
     - [ ] RECURSIVE ARRAYS
-  - [X] RESPCODE
-  - [X] FLATARRAY
-  - [X] BINARYSTRING
 - [X] Pipelined queries
 - [ ] Actions
   - [ ] DBSIZE
