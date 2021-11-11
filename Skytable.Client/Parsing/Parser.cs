@@ -44,27 +44,27 @@ namespace Skytable.Client.Parsing
         }
 
         /// <summary>Parse the response. Returns a tuple containing a <see cref="SkyResult&lt;Response&gt;"/> and an integer that contains the cursor's position in the buffer.</summary>
-        public (SkyResult<Response>, int) Parse()
+        public (SkyResult<Element>, int) Parse()
         {
             var numberOfQueries = ParseMetaframeGetDatagroupCount();
             if (numberOfQueries.IsError)
-                return (SkyResult<Response>.Err(numberOfQueries.Error), _cursor);
+                return (SkyResult<Element>.Err(numberOfQueries.Error), _cursor);
             if (numberOfQueries.Item == 0)
-                return (SkyResult<Response>.Err(ParseError.BadPacket), _cursor);
+                return (SkyResult<Element>.Err(ParseError.BadPacket), _cursor);
             
             if (numberOfQueries.Item == 1)
             {
                 var result = ParseNextElement();
                 if (result.IsError)
-                    return (SkyResult<Response>.Err(result.Error), 0);
+                    return (SkyResult<Element>.Err(result.Error), 0);
                 
                 // No need to check result since we pass in true here. Cannot be an Error.
                 if (WillCursorGiveChar((char)SKYHASH_HEADER, true).Item)
                 {
-                    return (SkyResult<Response>.Ok(new Response(result.Item)), _cursor);
+                    return (result, _cursor);
                 }
 
-                return (SkyResult<Response>.Err(ParseError.UnexpectedByte), _cursor);
+                return (SkyResult<Element>.Err(ParseError.UnexpectedByte), _cursor);
             }
 
             throw new NotSupportedException("Pipelined queries are not supported yet.");

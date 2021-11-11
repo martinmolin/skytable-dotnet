@@ -42,9 +42,9 @@ namespace Skytable.Client
             IsError = true;
         }
 
-        internal static SkyResult<T> Ok(T result)
+        internal static SkyResult<T> Ok(T item)
         {
-            return new SkyResult<T>(result);
+            return new SkyResult<T>(item);
         }
 
         internal static SkyResult<T> Err(ParseError error)

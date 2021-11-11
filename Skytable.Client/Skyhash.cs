@@ -24,16 +24,16 @@ namespace Skytable.Client
     public abstract class Skyhash
     {
         /// <summary>
-        /// This function will by default try to deserialize a <see cref="Response"/> into type T using the <see cref="JsonSerializer"/>.
+        /// This function will by default try to deserialize a <see cref="Element"/> into type T using the <see cref="JsonSerializer"/>.
         /// </summary>
-        public virtual T From<T>(Response response)
+        public virtual T From<T>(Element element)
         {
-            switch(response.Element.Type)
+            switch(element.Type)
             {
                 case ElementType.String:
-                    return JsonSerializer.Deserialize<T>(response.Element.Item as string);
+                    return JsonSerializer.Deserialize<T>(element.Object as string);
                 case ElementType.BinaryString:
-                    var bytes = (response.Element.Item as List<byte>).ToArray();
+                    var bytes = (element.Object as List<byte>).ToArray();
                     return JsonSerializer.Deserialize<T>(bytes);
                 default:
                     return default(T);

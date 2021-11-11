@@ -19,7 +19,7 @@ namespace Skytable.Client.IntegrationTests
         {
             _fixture.Db.Set("DelKey", "DelValue");
             var result = _fixture.Db.Delete("DelKey");
-            var delKeyCount = (ulong)result.Item.Element.Item;
+            var delKeyCount = (ulong)result.Item.Object;
             Assert.True(result.IsOk);
             Assert.Equal((ulong)1, delKeyCount);
         }
@@ -28,8 +28,8 @@ namespace Skytable.Client.IntegrationTests
         public void DelQueryShouldReturnZero_WhenCalledWithMissingKey()
         {
             var result = _fixture.Db.Delete("MissingDeleteKey");
-            var responseCode = result.Item.Element.Item as ResponseCode;
-            var delKeyCount = (ulong)result.Item.Element.Item;
+            var responseCode = result.Item.Object as ResponseCode;
+            var delKeyCount = (ulong)result.Item.Object;
             Assert.True(result.IsOk);
             Assert.Equal((ulong)0, delKeyCount);
         }
@@ -38,7 +38,7 @@ namespace Skytable.Client.IntegrationTests
         public void SetQueryShouldReturnOk_WhenCalledWithNewKey()
         {
             var result = _fixture.Db.Set("SetKey", "SetValue");
-            var responseCode = result.Item.Element.Item as ResponseCode;
+            var responseCode = result.Item.Object as ResponseCode;
             Assert.True(result.IsOk);
             Assert.Equal(RespCode.Okay, responseCode.Code);
         }
@@ -49,14 +49,14 @@ namespace Skytable.Client.IntegrationTests
             _fixture.Db.Set("GetKey", "GetValue");
             var result = _fixture.Db.Get("GetKey");
             Assert.True(result.IsOk);
-            Assert.Equal("GetValue", result.Item.Element.Item);
+            Assert.Equal("GetValue", result.Item.Object);
         }
 
         [Fact]
         public void GetQueryShouldReturnNotFound_WhenCalledWithMissingKey()
         {
             var result = _fixture.Db.Get("GetKeyMissing");
-            var responseCode = result.Item.Element.Item as ResponseCode;
+            var responseCode = result.Item.Object as ResponseCode;
             Assert.True(result.IsOk);
             Assert.Equal(RespCode.NotFound, responseCode.Code);
         }
@@ -65,13 +65,13 @@ namespace Skytable.Client.IntegrationTests
         public void USetQueryShouldReturnOk_WhenCalledWithNewKey()
         {
             var result = _fixture.Db.USet("USetKey", "USetValue");
-            var setKeyCount = (ulong)result.Item.Element.Item;
+            var setKeyCount = (ulong)result.Item.Object;
             Assert.True(result.IsOk);
             Assert.Equal((ulong)1, setKeyCount);
 
             result = _fixture.Db.Get("USetKey");
             Assert.True(result.IsOk);
-            Assert.Equal("USetValue", result.Item.Element.Item);
+            Assert.Equal("USetValue", result.Item.Object);
         }
 
         [Fact]
@@ -79,13 +79,13 @@ namespace Skytable.Client.IntegrationTests
         {
             _fixture.Db.Set("USetKeyExisting", "USetValueExisting");
             var result = _fixture.Db.USet("USetKeyExisting", "USetValueExistingNew");
-            var setKeyCount = (ulong)result.Item.Element.Item;
+            var setKeyCount = (ulong)result.Item.Object;
             Assert.True(result.IsOk);
             Assert.Equal((ulong)1, setKeyCount);
 
             result = _fixture.Db.Get("USetKeyExisting");
             Assert.True(result.IsOk);
-            Assert.Equal("USetValueExistingNew", result.Item.Element.Item);
+            Assert.Equal("USetValueExistingNew", result.Item.Object);
         }
     }
 }

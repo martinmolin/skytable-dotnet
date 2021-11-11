@@ -44,9 +44,9 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create a GET <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        public SkyResult<Response> Get(string key)
+        public SkyResult<Element> Get(string key)
         {
             return _connection.Get(key);
         }
@@ -54,9 +54,9 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create a GET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        public async Task<SkyResult<Response>> GetAsync(string key)
+        public async Task<SkyResult<Element>> GetAsync(string key)
         {
             return await _connection.GetAsync(key);
         }
@@ -84,9 +84,9 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create a SET <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        public SkyResult<Response> Set(string key, string value)
+        public SkyResult<Element> Set(string key, string value)
         {
             return _connection.Set(key, value);
         }
@@ -94,9 +94,9 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create a SET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        public async Task<SkyResult<Response>> SetAsync(string key, string value)
+        public async Task<SkyResult<Element>> SetAsync(string key, string value)
         {
             return await _connection.SetAsync(key, value);
         }
@@ -104,9 +104,9 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create a SET <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        public SkyResult<Response> Set(string key, Skyhash value)
+        public SkyResult<Element> Set(string key, Skyhash value)
         {
             return _connection.Set(key, value);
         }
@@ -114,9 +114,9 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create a SET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        public async Task<SkyResult<Response>> SetAsync(string key, Skyhash value)
+        public async Task<SkyResult<Element>> SetAsync(string key, Skyhash value)
         {
             return await _connection.SetAsync(key, value);
         }
@@ -124,9 +124,9 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create a DEL <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        public SkyResult<Response> Delete(string key)
+        public SkyResult<Element> Delete(string key)
         {
             return _connection.Delete(key);
         }
@@ -134,9 +134,9 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create a DEL <see cref="Query"/> and write it to the stream and read the response asynchronously from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        public async Task<SkyResult<Response>> DeleteAsync(string key)
+        public async Task<SkyResult<Element>> DeleteAsync(string key)
         {
             return await _connection.DeleteAsync(key);
         }
@@ -144,9 +144,9 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        public SkyResult<Response> USet(string key, string value)
+        public SkyResult<Element> USet(string key, string value)
         {
             return _connection.USet(key, value);
         }
@@ -154,9 +154,9 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        public async Task<SkyResult<Response>> USetAsync(string key, string value)
+        public async Task<SkyResult<Element>> USetAsync(string key, string value)
         {
             return await _connection.USetAsync(key, value);
         }
@@ -164,9 +164,9 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        public SkyResult<Response> USet(string key, Skyhash value)
+        public SkyResult<Element> USet(string key, Skyhash value)
         {
             return _connection.USet(key, value);
         }
@@ -174,9 +174,9 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        public async Task<SkyResult<Response>> USetAsync(string key, Skyhash value)
+        public async Task<SkyResult<Element>> USetAsync(string key, Skyhash value)
         {
             return await _connection.USetAsync(key, value);
         }
@@ -184,9 +184,9 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create a POP <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        public SkyResult<Response> Pop(string key)
+        public SkyResult<Element> Pop(string key)
         {
             return _connection.Pop(key);
         }
@@ -194,9 +194,9 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create a POP <see cref="Query"/> and write it to the stream and read the response asynchronously from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        public async Task<SkyResult<Response>> PopAsync(string key)
+        public async Task<SkyResult<Element>> PopAsync(string key)
         {
             return await _connection.PopAsync(key);
         }

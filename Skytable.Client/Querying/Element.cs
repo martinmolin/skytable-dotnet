@@ -20,64 +20,64 @@ namespace Skytable.Client.Querying
     public class Element
     {
         /// <summary>Gets the object that this element represents. It is of type <see cref="ElementType"/>.</summary>
-        public object Item { get; }
+        public object Object { get; }
         
-        /// <summary>Gets the <see cref="ElementType"/> of the Item that this element represents.</summary>
+        /// <summary>Gets the <see cref="ElementType"/> of the Object that this element represents.</summary>
         public ElementType Type { get; }
 
         internal Element(string s)
         {
-            Item = s;
+            Object = s;
             Type = ElementType.String;
         }
 
         internal Element(ulong n)
         {
-            Item = n;
+            Object = n;
             Type = ElementType.UnsignedInt;
         }
 
         internal Element(ResponseCode r)
         {
-            Item = r;
+            Object = r;
             Type = ElementType.RespCode;
         }
 
         internal Element(List<Element> elements)
         {
-            Item = elements;
+            Object = elements;
             Type = ElementType.Array;
         }
 
         internal Element(List<string> strings)
         {
-            Item = strings;
+            Object = strings;
             Type = ElementType.FlatArray;
         }
 
         internal Element(List<byte> binaryString)
         {
-            Item = binaryString;
+            Object = binaryString;
             Type = ElementType.BinaryString;
         }
 
         internal Element(List<List<byte>> binaryStrings)
         {
-            Item = binaryStrings;
+            Object = binaryStrings;
             Type = ElementType.FlatArray;
         }
 
         /// <summary>Returns a string with the format ElementType(Item).</summary>
         public override string ToString()
         {
-            if (Item == null)
+            if (Object == null)
                 return $"{Type}({base.ToString()})";
             switch (Type)
             {
                 case ElementType.BinaryString:
-                    return $"{Type}({string.Join(", ", Item as List<byte>)})";
+                    return $"{Type}({string.Join(", ", Object as List<byte>)})";
                 default:
-                    return $"{Type}({Item})";
+                    return $"{Type}({Object})";
             }
             
         }

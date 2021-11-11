@@ -23,16 +23,16 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create a GET <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        SkyResult<Response> Get(string key);
+        SkyResult<Element> Get(string key);
 
         /// <summary>
         /// This function will create a GET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        Task<SkyResult<Response>> GetAsync(string key);
+        Task<SkyResult<Element>> GetAsync(string key);
 
         /// <summary>
         /// This function will create a GET <see cref="Query"/> and write it to the stream and read the response from the
@@ -51,86 +51,86 @@ namespace Skytable.Client
         /// <summary>
         /// This function will create a SET <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        SkyResult<Response> Set(string key, string value);
+        SkyResult<Element> Set(string key, string value);
 
         /// <summary>
         /// This function will create a SET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        Task<SkyResult<Response>> SetAsync(string key, string value);
+        Task<SkyResult<Element>> SetAsync(string key, string value);
 
         /// <summary>
         /// This function will create a SET <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        SkyResult<Response> Set(string key, Skyhash value);
+        SkyResult<Element> Set(string key, Skyhash value);
 
         /// <summary>
         /// This function will create a SET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        Task<SkyResult<Response>> SetAsync(string key, Skyhash value);
+        Task<SkyResult<Element>> SetAsync(string key, Skyhash value);
 
         /// <summary>
         /// This function will create a DEL <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        SkyResult<Response> Delete(string key);
+        SkyResult<Element> Delete(string key);
 
         /// <summary>
         /// This function will create a DEL <see cref="Query"/> and write it to the stream and read the response asynchronously from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        Task<SkyResult<Response>> DeleteAsync(string key);
+        Task<SkyResult<Element>> DeleteAsync(string key);
 
         /// <summary>
         /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        SkyResult<Response> USet(string key, string value);
+        SkyResult<Element> USet(string key, string value);
 
         /// <summary>
         /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        Task<SkyResult<Response>> USetAsync(string key, string value);
+        Task<SkyResult<Element>> USetAsync(string key, string value);
 
         /// <summary>
         /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        SkyResult<Response> USet(string key, Skyhash value);
+        SkyResult<Element> USet(string key, Skyhash value);
 
         /// <summary>
         /// This function will create an USET <see cref="Query"/> and write it to the stream and read the response asynchronously from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        Task<SkyResult<Response>> USetAsync(string key, Skyhash value);
+        Task<SkyResult<Element>> USetAsync(string key, Skyhash value);
 
         /// <summary>
         /// This function will create a POP <see cref="Query"/> and write it to the stream and read the response from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        SkyResult<Response> Pop(string key);
+        SkyResult<Element> Pop(string key);
 
         /// <summary>
         /// This function will create a POP <see cref="Query"/> and write it to the stream and read the response asynchronously from the
         /// server. It will then determine if the returned response is complete, incomplete
-        /// or invalid and return an appropriate variant of <see cref="Response"/>.
+        /// or invalid and return an appropriate variant of <see cref="Element"/>.
         /// </summary>
-        Task<SkyResult<Response>> PopAsync(string key);
+        Task<SkyResult<Element>> PopAsync(string key);
 
         /// <summary>
         /// This function will create a POP <see cref="Query"/> and write it to the stream and read the response from the
