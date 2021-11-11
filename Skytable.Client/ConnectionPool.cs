@@ -70,10 +70,7 @@ namespace Skytable.Client
             
             Count = count;
             for (int i = 0; i < Count; i++) {
-                var connection = new Connection(Host, Port);
-                connection.Connect();
-                connection.Use(_keyspace, _table);
-                _connections.Enqueue(connection);
+                _connections.Enqueue(CreateConnection());
             }
 
             _initialized = true;
@@ -124,8 +121,20 @@ namespace Skytable.Client
 
         internal void Return(Connection connection)
         {
-            _connections.Enqueue(connection);
+            if (connection.IsConnected)
+                _connections.Enqueue(connection);
+            else
+                _connections.Enqueue(CreateConnection());
+
             _borrowedCount--;
+        }
+
+        private Connection CreateConnection()
+        {
+            var connection = new Connection(Host, Port);
+            connection.Connect();
+            connection.Use(_keyspace, _table);
+            return connection;
         }
     }
 }
