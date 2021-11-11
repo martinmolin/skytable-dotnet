@@ -38,7 +38,7 @@ class Program
         var setResult = connection.Set("P", setPerson);
 
         // Contains a SkyResult<Person> deserialized from the JSON string retrieved with the Key `P`.
-        var getResponse = connection.Get<Person>("P");
+        var getResult = connection.Get<Person>("P");
     }
 }
 ```
