@@ -5,7 +5,7 @@
 ## Introduction
 
 The .NET driver for Skytable is a client driver for the free and open source NoSQL database [Skytable](https://github.com/skytable/skytable) ported from the official [Skytable client](https://github.com/skytable/client-rust). First, go ahead and install Skytable by following the instructions [here](https://docs.skytable.io/getting-started). This library supports all Skytable versions that work with the [Skyhash 1.1 Protocol](https://docs.skytable.io/protocol/skyhash).
-This version of the library was tested with the latest Skytable release (release [0.7.0](https://github.com/skytable/skytable/releases/tag/v0.7.0)).
+This version of the library was tested with the latest Skytable release (release [0.7.1](https://github.com/skytable/skytable/releases/tag/v0.7.1)).
 
 ## Using this library
 
