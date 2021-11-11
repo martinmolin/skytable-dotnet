@@ -34,8 +34,8 @@ class Program
         connection.Connect();
 
         // Serializes and stores the Person as a JSON string in Key `P`.
-        // Response is a SkyResult<Response> which indicates the result of the action.
-        var setResponse = connection.Set("P", setPerson);
+        // Result is a SkyResult<Element> containing a ResponseCode which indicates the result of the action.
+        var setResult = connection.Set("P", setPerson);
 
         // Contains a SkyResult<Person> deserialized from the JSON string retrieved with the Key `P`.
         var getResponse = connection.Get<Person>("P");
