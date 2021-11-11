@@ -48,7 +48,7 @@ Keep in mind that you can always set up your own custom queries to perform other
 ## TODO:
 - [ ] Examples
   - [ ] TLS ConnectionBuilder Example
-- [ ] Create Benchmark project
+- [X] Create Benchmark project
 - [ ] Set up Releases
     - [ ] Set up GHA
     - [ ] Set up nuget
