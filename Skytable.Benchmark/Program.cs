@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using Skytable.Client;
-using Skytable.Client.Querying;
 
 namespace Skytable.Benchmark
 {

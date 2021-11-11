@@ -13,9 +13,9 @@ namespace CustomQuery
             connection.Connect();
 
             // Set the Key 'KeyOne' to "MyValueOne"
-            var setKeyOneResponse = connection.Set("KeyOne", "MyValueOne");
+            var setKeyOneResult = connection.Set("KeyOne", "MyValueOne");
             // Set the Key 'KeyTwo' to "MyValueTwo"
-            var setKeyTwoResponse = connection.Set("KeyTwo", "MyValueTwo");
+            var setKeyTwoResult = connection.Set("KeyTwo", "MyValueTwo");
 
             // Create an MGET Query. See https://docs.skytable.io/actions/mget
             var query = new Query();
@@ -23,13 +23,13 @@ namespace CustomQuery
             query.Push("KeyOne");
             query.Push("KeyTwo");
 
-            // Response contains the values of both 'KeyOne' and 'KeyTwo'.
-            var mgetResponse = connection.RunSimpleQuery(query);
+            // Result contains the values of both 'KeyOne' and 'KeyTwo'.
+            var mgetResult = connection.RunSimpleQuery(query);
 
-            if (mgetResponse.IsOk)
-                Console.WriteLine(mgetResponse.Item);
+            if (mgetResult.IsOk)
+                Console.WriteLine(mgetResult.Item);
             else
-                Console.WriteLine(mgetResponse.Error);
+                Console.WriteLine(mgetResult.Error);
         }
     }
 }

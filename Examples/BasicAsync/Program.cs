@@ -13,15 +13,15 @@ namespace BasicAsync
             await connection.ConnectAsync();
 
             // Set the Key 'BasicAsync' to "MyValue"
-            var setResponse = await connection.SetAsync("BasicAsync", "MyValue");
+            var setResult = await connection.SetAsync("BasicAsync", "MyValue");
 
             // Get the value "MyValue" of the Key 'BasicAsync'.
-            var getResponse = await connection.GetAsync("BasicAsync");
+            var getResult = await connection.GetAsync("BasicAsync");
             
-            if (getResponse.IsOk)
-                Console.WriteLine(getResponse.Item);
+            if (getResult.IsOk)
+                Console.WriteLine(getResult.Item);
             else
-                Console.WriteLine(getResponse.Error);
+                Console.WriteLine(getResult.Error);
         }
     }
 }

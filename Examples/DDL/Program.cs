@@ -12,12 +12,12 @@ namespace DDL
             connection.Connect();
 
             // Change the entity (keyspace:table) that we wish to query.
-            var useResponse = connection.Use("MyKeyspace", "MyTable");
+            var useResult = connection.Use("MyKeyspace", "MyTable");
 
-            if (useResponse.IsOk)
-                Console.WriteLine(useResponse.Item);
+            if (useResult.IsOk)
+                Console.WriteLine(useResult.Item);
             else
-                Console.WriteLine(useResponse.Error);
+                Console.WriteLine(useResult.Error);
         }
     }
 }

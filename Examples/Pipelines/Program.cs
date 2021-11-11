@@ -28,13 +28,13 @@ namespace Pipelines
                 .Add(setQuery)
                 .Add(getQuery);
 
-            // Run the pipeline and get the response.
-            var response = connection.RunPipeline(pipeline);
+            // Run the pipeline and get the result.
+            var result = connection.RunPipeline(pipeline);
 
-            if (response.IsOk)
-                Console.WriteLine(response.Item);
+            if (result.IsOk)
+                Console.WriteLine(result.Item);
             else
-                Console.WriteLine(response.Error);
+                Console.WriteLine(result.Error);
         }
     }
 }

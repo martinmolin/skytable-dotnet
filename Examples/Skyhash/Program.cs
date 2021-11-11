@@ -26,15 +26,15 @@ namespace SkyhashExample
             connection.Connect();
 
             // Set the Key 'Person' to a JSON string representing the 'setPerson' object.
-            var setResponse = connection.Set("Person", setPerson);
+            var setResult = connection.Set("Person", setPerson);
 
             // 'person' now contains a SkyResult<Person> with the name "John Doe" and age 30.
-            var person = connection.Get<Person>("Person");
+            var personResult = connection.Get<Person>("Person");
 
-            if (person.IsOk)
-                Console.WriteLine($"Name: {person.Item.Name}, Age: {person.Item.Age}");
+            if (personResult.IsOk)
+                Console.WriteLine($"Name: {personResult.Item.Name}, Age: {personResult.Item.Age}");
             else
-                Console.WriteLine(person.Error);
+                Console.WriteLine(personResult.Error);
         }
     }
 }

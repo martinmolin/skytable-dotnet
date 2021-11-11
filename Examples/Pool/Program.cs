@@ -18,7 +18,7 @@ namespace Pool
             using (var connection = pool.Connection())
             {
                 // Set the Key 'Pool' to "MyValue"
-                var setResponse = connection.Set("Pool", "MyValue");
+                connection.Set("Pool", "MyValue");
             }
 
             var threads = new Thread[4];
@@ -51,8 +51,8 @@ namespace Pool
                 using var connection = pool.Connection();
 
                 // Get the value "MyValue" of the Key 'Pool'.
-                var getResponse = connection.Get("Pool");
-                System.Console.WriteLine($"{i} - {getResponse}");
+                var getResult = connection.Get("Pool");
+                System.Console.WriteLine($"{i} - {getResult}");
             }
         }
     }

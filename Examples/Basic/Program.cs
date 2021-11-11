@@ -12,15 +12,15 @@ namespace Basic
             connection.Connect();
 
             // Set the Key 'Basic' to "MyValue"
-            var setResponse = connection.Set("Basic", "MyValue");
+            var setResult = connection.Set("Basic", "MyValue");
 
             // Get the value "MyValue" of the Key 'Basic'.
-            var getResponse = connection.Get("Basic");
+            var getResult = connection.Get("Basic");
 
-            if (getResponse.IsOk)
-                Console.WriteLine(getResponse.Item);
+            if (getResult.IsOk)
+                Console.WriteLine(getResult.Item);
             else
-                Console.WriteLine(getResponse.Error);
+                Console.WriteLine(getResult.Error);
         }
     }
 }
